@@ -1,0 +1,131 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Top Welcome Banner -->
+  <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-[#C29B5C]/10 border border-slate-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Welcome to Your Portal</h1>
+      <p class="text-sm text-slate-400 mt-1 capitalize"><%= client.name %> &bull; Workspace Panel</p>
+    </div>
+    <div class="text-xs text-slate-400 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center space-x-2">
+      <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+      <span>Connected &bull; Client Portal Secure Mode</span>
+    </div>
+  </div>
+
+  <!-- Milestone Completion Progress Card -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Project Milestone Progress</h3>
+        <p class="text-xs text-slate-400 mt-1">Real-time status of your active service lifecycle</p>
+      </div>
+      <span class="text-2xl font-black text-[#C29B5C]"><%= progress %>%</span>
+    </div>
+    <div class="w-full bg-slate-950 rounded-full h-3 overflow-hidden border border-slate-800">
+      <div class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] h-full rounded-full transition-all duration-500" style="width: <%= progress %>%"></div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Milestones Timeline (Left Column) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm col-span-2 space-y-6">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2.5">Development Phases & Milestones</h3>
+      
+      <% if (milestones.length === 0) { %>
+        <div class="text-center py-12 text-slate-500 space-y-2">
+          <i class="fa-solid fa-route text-3xl opacity-30"></i>
+          <p class="text-sm">No milestones have been defined for your project yet.</p>
+        </div>
+      <% } else { %>
+        <div class="relative pl-6 border-l border-slate-800 space-y-8">
+          <% milestones.forEach(milestone => { %>
+            <div class="relative">
+              <!-- Bullet -->
+              <span class="absolute -left-[31px] top-0.5 w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 
+                <%= milestone.status === 'completed' ? 'bg-emerald-500 border-emerald-500 text-white' : 
+                    milestone.status === 'in_progress' ? 'bg-amber-500 border-amber-500 text-white' : 'bg-slate-950 border-slate-800 text-slate-600' %>">
+                <% if (milestone.status === 'completed') { %>
+                  <i class="fa-solid fa-check text-[9px]"></i>
+                <% } else if (milestone.status === 'in_progress') { %>
+                  <i class="fa-solid fa-spinner text-[9px] animate-spin"></i>
+                <% } else { %>
+                  <i class="fa-solid fa-circle text-[6px]"></i>
+                <% } %>
+              </span>
+
+              <div>
+                <div class="flex justify-between items-start">
+                  <h4 class="font-bold text-slate-200 text-sm"><%= milestone.title %></h4>
+                  <span class="text-[9px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border 
+                    <%= milestone.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                        milestone.status === 'in_progress' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
+                        'bg-slate-800 text-slate-400 border-slate-700' %>">
+                    <%= milestone.status %>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1"><%= milestone.description || 'No description provided.' %></p>
+                <% if (milestone.due_date) { %>
+                  <div class="flex items-center space-x-1.5 text-[10px] text-slate-500 mt-2">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span>Target: <%= new Date(milestone.due_date).toLocaleDateString('en-IN', { dateStyle: 'medium' }) %></span>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Right Column (Invoices & Quick Support Summary) -->
+    <div class="space-y-6">
+      <!-- Unpaid Invoices summary -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2.5">Outstanding Invoices</h3>
+        
+        <% const unpaidInvoices = invoices.filter(inv => inv.status === 'unpaid'); %>
+        <% if (unpaidInvoices.length === 0) { %>
+          <div class="text-center py-6 text-slate-500 space-y-2">
+            <i class="fa-solid fa-circle-check text-2xl text-emerald-500/30"></i>
+            <p class="text-xs">All invoices are fully paid! Thank you.</p>
+          </div>
+        <% } else { %>
+          <div class="space-y-3">
+            <% unpaidInvoices.forEach(invoice => { %>
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-slate-500 font-semibold block uppercase">Invoice #<%= invoice.invoice_number %></span>
+                  <span class="text-base font-black text-slate-200 select-all">₹<%= parseFloat(invoice.amount).toLocaleString('en-IN') %></span>
+                  <span class="text-[9px] text-red-400 block mt-1">Due: <%= new Date(invoice.due_date).toLocaleDateString('en-IN', { dateStyle: 'medium' }) %></span>
+                </div>
+                <a href="/portal/invoices" class="bg-[#C29B5C]/15 border border-[#C29B5C]/25 text-[#C29B5C] hover:bg-[#C29B5C] hover:text-slate-950 font-bold py-1.5 px-3 rounded-lg text-xs transition duration-150">
+                  Pay Now
+                </a>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Quick Support Summary -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2.5">Support Tickets</h3>
+        
+        <div class="flex justify-between items-center bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+          <div>
+            <span class="text-2xl font-black text-slate-200"><%= tickets.filter(t => t.status !== 'resolved').length %></span>
+            <span class="text-xs text-slate-500 block">Active Tickets</span>
+          </div>
+          <a href="/portal/tickets/new" class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-100 font-bold py-2 px-3.5 rounded-lg text-xs transition flex items-center space-x-1">
+            <i class="fa-solid fa-plus text-[10px]"></i>
+            <span>New Ticket</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

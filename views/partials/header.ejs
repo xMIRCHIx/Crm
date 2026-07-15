@@ -33,8 +33,10 @@
     <% if (user) { %>
       <% if (user.role === 'admin') { %>
         <%- include('sidebar-admin') %>
-      <% } else { %>
+      <% } else if (user.role === 'team_member') { %>
         <%- include('sidebar-team') %>
+      <% } else if (user.role === 'client') { %>
+        <%- include('sidebar-client') %>
       <% } %>
     <% } %>
 

@@ -46,9 +46,14 @@ app.use('/clients', dbGuard, require('./routes/clients'));
 app.use('/team', dbGuard, require('./routes/team'));
 app.use('/tasks', dbGuard, require('./routes/tasks'));
 app.use('/payments', dbGuard, require('./routes/payments'));
+app.use('/portal', dbGuard, require('./routes/portal'));
+app.use('/tickets', dbGuard, require('./routes/tickets'));
 
 // Root route redirect
 app.get('/', (req, res) => {
+  if (req.session && req.session.role === 'client') {
+    return res.redirect('/portal');
+  }
   res.redirect('/dashboard');
 });
 

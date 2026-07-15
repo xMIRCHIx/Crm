@@ -11,13 +11,18 @@ const User = {
     return rows[0] || null;
   },
 
-  async create({ name, email, passwordHash, role, department, phone }) {
+  async create({ name, email, passwordHash, role, department, phone, client_id }) {
     const result = await db.query(
-      `INSERT INTO users (name, email, password_hash, role, department, phone, status) 
-       VALUES (?, ?, ?, ?, ?, ?, 'active')`,
-      [name, email, passwordHash, role || 'team_member', department || null, phone || null]
+      `INSERT INTO users (name, email, password_hash, role, department, phone, client_id, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active')`,
+      [name, email, passwordHash, role || 'team_member', department || null, phone || null, client_id || null]
     );
     return result.insertId;
+  },
+
+  async findByClientId(clientId) {
+    const rows = await db.query('SELECT * FROM users WHERE client_id = ? LIMIT 1', [clientId]);
+    return rows[0] || null;
   },
 
   async getAllWithTaskCount() {

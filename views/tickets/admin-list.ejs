@@ -1,0 +1,101 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Client Support Tickets</h1>
+      <p class="text-sm text-slate-400 mt-1">Review bug reports, modification requests, and general service queries.</p>
+    </div>
+  </div>
+
+  <!-- Tickets Listing Table -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+    <div class="p-6 border-b border-slate-800">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">All Client Support Requests</h3>
+    </div>
+
+    <% if (tickets.length === 0) { %>
+      <div class="text-center py-16 text-slate-500 space-y-3">
+        <i class="fa-solid fa-headset text-4xl opacity-30"></i>
+        <p class="text-sm">No support tickets have been submitted by clients yet.</p>
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-950/40">
+              <th class="px-6 py-4">Client</th>
+              <th class="px-6 py-4">Ticket</th>
+              <th class="px-6 py-4">Category</th>
+              <th class="px-6 py-4">Priority</th>
+              <th class="px-6 py-4">Date Opened</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300 text-xs">
+            <% tickets.forEach(ticket => { %>
+              <tr class="hover:bg-slate-950/20 transition-colors">
+                <!-- Client name -->
+                <td class="px-6 py-4 font-bold text-slate-200"><%= ticket.client_name %></td>
+                
+                <!-- Ticket details -->
+                <td class="px-6 py-4 max-w-xs">
+                  <span class="font-bold text-slate-200 block truncate"><%= ticket.title %></span>
+                  <span class="text-[10px] text-slate-500 block truncate mt-0.5"><%= ticket.description %></span>
+                </td>
+                
+                <!-- Category -->
+                <td class="px-6 py-4 capitalize">
+                  <% if (ticket.category === 'bug') { %>
+                    <span class="text-rose-400 font-semibold"><i class="fa-solid fa-bug text-[10px] mr-1"></i>Bug Report</span>
+                  <% } else if (ticket.category === 'feature_request') { %>
+                    <span class="text-purple-400 font-semibold"><i class="fa-solid fa-wand-magic-sparkles text-[10px] mr-1"></i>Feature Request</span>
+                  <% } else { %>
+                    <span class="text-sky-400 font-semibold"><i class="fa-solid fa-gears text-[10px] mr-1"></i>Service Request</span>
+                  <% } %>
+                </td>
+                
+                <!-- Priority -->
+                <td class="px-6 py-4">
+                  <% if (ticket.priority === 'high') { %>
+                    <span class="px-2 py-0.5 text-[9px] font-bold rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-wide">High</span>
+                  <% } else if (ticket.priority === 'medium') { %>
+                    <span class="px-2 py-0.5 text-[9px] font-bold rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">Medium</span>
+                  <% } else { %>
+                    <span class="px-2 py-0.5 text-[9px] font-bold rounded bg-slate-800 text-slate-400 border border-slate-700 uppercase tracking-wide">Low</span>
+                  <% } %>
+                </td>
+
+                <!-- Date -->
+                <td class="px-6 py-4"><%= new Date(ticket.created_at).toLocaleDateString('en-IN', { dateStyle: 'medium' }) %></td>
+
+                <!-- Status -->
+                <td class="px-6 py-4">
+                  <% if (ticket.status === 'open') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-wide">Open</span>
+                  <% } else if (ticket.status === 'in_progress') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">In Progress</span>
+                  <% } else { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Resolved</span>
+                  <% } %>
+                </td>
+
+                <!-- Action -->
+                <td class="px-6 py-4 text-center">
+                  <a href="/tickets/<%= ticket.id %>" class="text-[#C29B5C] hover:text-[#C29B5C]/80 font-bold transition-colors inline-flex items-center space-x-1">
+                    <span>Manage</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                  </a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/header') %>

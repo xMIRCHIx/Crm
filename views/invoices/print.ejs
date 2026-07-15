@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice - <%= invoice.invoice_number %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-full flex flex-col font-sans p-6 sm:p-12">
+  <div class="max-w-4xl w-full mx-auto bg-white p-8 border border-gray-200 rounded-2xl shadow-sm flex-1 flex flex-col justify-between">
+    <div>
+      <!-- Invoice Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-8 mb-8 space-y-4 sm:space-y-0">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-lg">G</span>
+            <span class="text-xl font-extrabold tracking-tight text-gray-900">Growlix CRM</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Professional Creative Solutions</p>
+        </div>
+        <div class="text-left sm:text-right">
+          <h1 class="text-3xl font-black tracking-tight text-gray-900 uppercase">Invoice</h1>
+          <p class="text-sm font-semibold text-amber-600 mt-1">#<%= invoice.invoice_number %></p>
+        </div>
+      </div>
+
+      <!-- Invoice Details Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2.5">Billed To</h3>
+          <h4 class="text-base font-bold text-gray-900"><%= invoice.client_name %></h4>
+          <p class="text-sm text-gray-600 mt-1"><%= invoice.client_address || 'Address not configured' %></p>
+          <p class="text-sm text-gray-600 mt-1"><%= invoice.client_email %></p>
+          <p class="text-sm text-gray-600 mt-0.5"><%= invoice.client_phone || '' %></p>
+        </div>
+        <div class="md:text-right">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2.5">Invoice Details</h3>
+          <div class="space-y-1.5 text-sm text-gray-600">
+            <div><span class="text-gray-400 mr-2">Date Issued:</span> <span class="font-semibold text-gray-900"><%= new Date(invoice.created_at).toLocaleDateString('en-IN', { dateStyle: 'medium' }) %></span></div>
+            <div><span class="text-gray-400 mr-2">Due Date:</span> <span class="font-semibold text-gray-900"><%= new Date(invoice.due_date).toLocaleDateString('en-IN', { dateStyle: 'medium' }) %></span></div>
+            <div>
+              <span class="text-gray-400 mr-2">Status:</span> 
+              <% if (invoice.status === 'paid') { %>
+                <span class="px-2 py-0.5 text-xs font-bold rounded bg-emerald-100 text-emerald-800 uppercase">Paid</span>
+              <% } else { %>
+                <span class="px-2 py-0.5 text-xs font-bold rounded bg-rose-100 text-rose-800 uppercase">Unpaid</span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Itemized Table -->
+      <table class="w-full text-left mb-12">
+        <thead>
+          <tr class="border-b border-gray-200 text-xs font-bold uppercase tracking-wider text-gray-400">
+            <th class="pb-3">Description</th>
+            <th class="pb-3 text-right">Total Amount</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr class="text-sm">
+            <td class="py-4">
+              <span class="font-semibold text-gray-900 block">Professional Services rendered for client projects</span>
+              <span class="text-xs text-gray-500 mt-0.5 block">Includes videography, photography, or digital media solutions.</span>
+            </td>
+            <td class="py-4 text-right font-bold text-gray-900 select-all">₹<%= parseFloat(invoice.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer summary & actions -->
+    <div>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-t border-gray-100 pt-8 mt-8">
+        <div>
+          <h3 class="text-sm font-bold text-gray-900">Thank you for your business!</h3>
+          <p class="text-xs text-gray-500 mt-1">If you have any questions concerning this invoice, contact us.</p>
+        </div>
+        <div class="text-left sm:text-right mt-4 sm:mt-0">
+          <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Total Due</span>
+          <h2 class="text-3xl font-black text-gray-900 select-all">₹<%= parseFloat(invoice.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) %></h2>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end space-x-3 no-print">
+        <button onclick="window.print()" class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 px-6 rounded-xl text-sm transition shadow-sm">
+          Print Invoice
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

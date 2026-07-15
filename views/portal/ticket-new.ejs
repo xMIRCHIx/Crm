@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex items-center space-x-3">
+    <a href="/portal/tickets" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Tickets">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-100">Submit Support Ticket</h1>
+      <p class="text-xs text-slate-400 mt-1">Open a new request for bugs, questions, or modifications.</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-sm">
+    <form action="/portal/tickets/new" method="POST" class="space-y-6">
+      
+      <!-- Title -->
+      <div>
+        <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Ticket Subject *</label>
+        <input type="text" name="title" id="title" required
+               placeholder="Short summary of the issue..."
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Category -->
+        <div>
+          <label for="category" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Category *</label>
+          <select name="category" id="category" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3.5 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="" disabled selected>Select category...</option>
+            <option value="bug">Bug / Technical Issue</option>
+            <option value="service">Service Request / Question</option>
+            <option value="feature_request">Feature Request / Modification</option>
+          </select>
+        </div>
+
+        <!-- Priority -->
+        <div>
+          <label for="priority" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Priority Level</label>
+          <select name="priority" id="priority"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3.5 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="low">Low - General query</option>
+            <option value="medium" selected>Medium - Normal workflow</option>
+            <option value="high">High - Blocking issue</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Describe the Issue in Detail *</label>
+        <textarea name="description" id="description" rows="6" required
+                  placeholder="Provide details about what you need or steps to reproduce the bug..."
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C]"></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end space-x-4 border-t border-slate-800/80 pt-6">
+        <a href="/portal/tickets" class="text-slate-455 hover:text-slate-200 text-sm font-semibold">Cancel</a>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-8 rounded-xl transition duration-150 text-xs uppercase tracking-wider shadow-lg">
+          Submit Ticket
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

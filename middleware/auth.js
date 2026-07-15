@@ -37,6 +37,17 @@ function requireAdmin(req, res, next) {
 }
 
 /**
+ * Middleware to restrict access to Clients only.
+ */
+function requireClient(req, res, next) {
+  if (req.session.role !== 'client') {
+    req.flash('error', 'Access denied. Client privileges required.');
+    return res.redirect('/login');
+  }
+  next();
+}
+
+/**
  * Helper middleware to expose session details to all EJS templates.
  */
 function exposeSession(req, res, next) {
@@ -44,7 +55,8 @@ function exposeSession(req, res, next) {
     id: req.session.userId,
     name: req.session.name,
     email: req.session.email,
-    role: req.session.role
+    role: req.session.role,
+    clientId: req.session.clientId
   } : null;
   res.locals.flash = {
     success: req.flash('success'),
@@ -58,5 +70,6 @@ module.exports = {
   dbGuard,
   requireAuth,
   requireAdmin,
+  requireClient,
   exposeSession
 };

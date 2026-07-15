@@ -119,6 +119,10 @@ router.post('/clear-database', requireAuth, async (req, res) => {
     await db.query('TRUNCATE TABLE tasks');
     await db.query('TRUNCATE TABLE clients');
     await db.query('TRUNCATE TABLE activity_log');
+    await db.query('TRUNCATE TABLE project_milestones');
+    await db.query('TRUNCATE TABLE invoices');
+    await db.query('TRUNCATE TABLE tickets');
+    await db.query('TRUNCATE TABLE ticket_replies');
     
     // 3. Remove non-admin users
     await db.query("DELETE FROM users WHERE role != 'admin'");

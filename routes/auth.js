@@ -7,6 +7,9 @@ const ActivityLog = require('../models/activityLog');
 // GET /login
 router.get('/login', (req, res) => {
   if (req.session && req.session.userId) {
+    if (req.session.role === 'client') {
+      return res.redirect('/portal');
+    }
     return res.redirect('/dashboard');
   }
   res.render('auth/login');
@@ -45,12 +48,17 @@ router.post('/login', async (req, res) => {
     req.session.name = user.name;
     req.session.email = user.email;
     req.session.role = user.role;
+    req.session.clientId = user.client_id;
 
     // Log the login activity
     await ActivityLog.log(user.id, 'User logged in successfully', 'user', user.id);
 
     req.flash('success', `Welcome back, ${user.name}!`);
-    res.redirect('/dashboard');
+    if (user.role === 'client') {
+      res.redirect('/portal');
+    } else {
+      res.redirect('/dashboard');
+    }
   } catch (err) {
     console.error('Login Error:', err);
     req.flash('error', 'An internal error occurred. Please try again.');

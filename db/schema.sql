@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(100) NOT NULL,
   email VARCHAR(150) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('admin', 'team_member') NOT NULL DEFAULT 'team_member',
+  role ENUM('admin', 'team_member', 'client') NOT NULL DEFAULT 'team_member',
   department VARCHAR(100),          -- e.g. 'Video Editor', 'Photographer', 'Web Developer'
   phone VARCHAR(20),
   status ENUM('active', 'inactive') DEFAULT 'active',
@@ -71,3 +71,57 @@ CREATE TABLE IF NOT EXISTS activity_log (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+-- Project Milestones
+CREATE TABLE IF NOT EXISTS project_milestones (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  client_id INT NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
+  due_date DATE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
+);
+
+-- Invoices
+CREATE TABLE IF NOT EXISTS invoices (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  client_id INT NOT NULL,
+  invoice_number VARCHAR(50) UNIQUE NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  due_date DATE NOT NULL,
+  status ENUM('unpaid', 'paid') DEFAULT 'unpaid',
+  reminder_sent_at TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
+);
+
+-- Support Tickets
+CREATE TABLE IF NOT EXISTS tickets (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  client_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  category ENUM('bug', 'service', 'feature_request') NOT NULL,
+  priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+  status ENUM('open', 'in_progress', 'resolved') DEFAULT 'open',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
+);
+
+-- Ticket Replies
+CREATE TABLE IF NOT EXISTS ticket_replies (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  ticket_id INT NOT NULL,
+  user_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Link users to client accounts for Client Portal
+ALTER TABLE users ADD COLUMN client_id INT NULL;
+ALTER TABLE users ADD CONSTRAINT fk_users_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL;
+
