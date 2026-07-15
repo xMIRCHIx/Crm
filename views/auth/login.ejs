@@ -84,7 +84,10 @@
           </span>
           <input type="password" name="password" id="password" required
             placeholder="••••••••"
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C] focus:ring-1 focus:ring-[#C29B5C]/30 transition duration-150">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-11 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C] focus:ring-1 focus:ring-[#C29B5C]/30 transition duration-150">
+          <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-slate-300">
+            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+          </button>
         </div>
       </div>
 
@@ -95,5 +98,24 @@
       </button>
     </form>
   </div>
+
+  <script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+    const eyeIcon = document.querySelector('#eyeIcon');
+
+    togglePassword.addEventListener('click', function () {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      
+      if (type === 'password') {
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      } else {
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      }
+    });
+  </script>
 </body>
 </html>
