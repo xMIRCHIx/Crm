@@ -7,7 +7,7 @@ const Task = require('../models/tasks');
 const Payment = require('../models/payments');
 
 // GET /dashboard
-router.get('/dashboard', requireAuth, async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   try {
     if (req.session.role === 'admin') {
       // 1. Parse selected month filter
