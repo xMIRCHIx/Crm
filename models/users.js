@@ -35,6 +35,10 @@ const User = {
 
   async getAllTeamMembers() {
     return await db.query("SELECT id, name, email, department FROM users WHERE role = 'team_member' AND status = 'active' ORDER BY name ASC");
+  },
+
+  async updatePassword(id, passwordHash) {
+    await db.query('UPDATE users SET password_hash = ? WHERE id = ?', [passwordHash, id]);
   }
 };
 

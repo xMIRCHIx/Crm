@@ -104,4 +104,43 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// POST /team/:id/reset-password - Reset password (generates random password)
+router.post('/:id/reset-password', async (req, res) => {
+  const memberId = parseInt(req.params.id);
+
+  try {
+    const member = await User.findById(memberId);
+    if (!member) {
+      req.flash('error', 'Team member not found.');
+      return res.redirect('/team');
+    }
+
+    // Generate random 10-character password
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+    let tempPassword = '';
+    for (let i = 0; i < 10; i++) {
+      tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    // Hash the password
+    const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+    // Update password in DB
+    await User.updatePassword(memberId, passwordHash);
+
+    await ActivityLog.log(req.session.userId, `Reset password for team member: ${member.name}`, 'user', memberId);
+
+    // Render password confirmation page
+    res.render('team/new-success', {
+      name: member.name,
+      email: member.email,
+      tempPassword
+    });
+  } catch (err) {
+    console.error('Reset Password Error:', err);
+    req.flash('error', 'Failed to reset password.');
+    res.redirect(`/team/${memberId}`);
+  }
+});
+
 module.exports = router;
