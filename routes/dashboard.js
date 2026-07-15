@@ -5,6 +5,7 @@ const Client = require('../models/clients');
 const User = require('../models/users');
 const Task = require('../models/tasks');
 const Payment = require('../models/payments');
+const db = require('../config/db');
 
 // GET /dashboard
 router.get('/', requireAuth, async (req, res) => {
@@ -99,6 +100,41 @@ router.get('/', requireAuth, async (req, res) => {
       chartLabels: [],
       chartValues: []
     });
+  }
+});
+
+// POST /dashboard/clear-database - Clear database (Admin only)
+router.post('/clear-database', requireAuth, async (req, res) => {
+  if (req.session.role !== 'admin') {
+    req.flash('error', 'Unauthorized action.');
+    return res.redirect('/dashboard');
+  }
+
+  try {
+    // 1. Disable foreign keys
+    await db.query('SET FOREIGN_KEY_CHECKS = 0');
+    
+    // 2. Truncate dynamic tables
+    await db.query('TRUNCATE TABLE payments');
+    await db.query('TRUNCATE TABLE tasks');
+    await db.query('TRUNCATE TABLE clients');
+    await db.query('TRUNCATE TABLE activity_log');
+    
+    // 3. Remove non-admin users
+    await db.query("DELETE FROM users WHERE role != 'admin'");
+    
+    // 4. Re-enable foreign keys
+    await db.query('SET FOREIGN_KEY_CHECKS = 1');
+
+    req.flash('success', 'Database cleared successfully! System has been completely reset.');
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Clear Database Error:', err);
+    try {
+      await db.query('SET FOREIGN_KEY_CHECKS = 1');
+    } catch (_) {}
+    req.flash('error', 'Failed to reset database.');
+    res.redirect('/dashboard');
   }
 });
 

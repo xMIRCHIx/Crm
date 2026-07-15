@@ -108,6 +108,10 @@ const Client = {
     `;
     const rows = await db.query(sql);
     return rows[0] || { total_clients: 0, lead_count: 0, ongoing_count: 0, completed_count: 0, on_hold_count: 0 };
+  },
+
+  async delete(id) {
+    await db.query('DELETE FROM clients WHERE id = ?', [id]);
   }
 };
 

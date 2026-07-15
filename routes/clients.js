@@ -154,4 +154,27 @@ router.post('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
+// POST /clients/:id/delete - Delete client (Admin only)
+router.post('/:id/delete', requireAuth, requireAdmin, async (req, res) => {
+  const clientId = parseInt(req.params.id);
+
+  try {
+    const client = await Client.findById(clientId);
+    if (!client) {
+      req.flash('error', 'Client not found.');
+      return res.redirect('/clients');
+    }
+
+    await Client.delete(clientId);
+    await ActivityLog.log(req.session.userId, `Deleted client: ${client.name}`, 'client', clientId);
+
+    req.flash('success', 'Client deleted successfully.');
+    res.redirect('/clients');
+  } catch (err) {
+    console.error('Delete Client Error:', err);
+    req.flash('error', 'Failed to delete client.');
+    res.redirect('/clients');
+  }
+});
+
 module.exports = router;

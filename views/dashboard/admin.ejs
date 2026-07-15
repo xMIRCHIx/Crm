@@ -7,14 +7,23 @@
       <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Performance Dashboard</h1>
       <p class="text-sm text-slate-400 mt-1">Real-time revenue, client stages, and team operations.</p>
     </div>
-    
-    <!-- Month Filter Form -->
-    <form action="/dashboard" method="GET" class="flex items-center space-x-3 bg-slate-900 border border-slate-800 p-2 rounded-xl shadow-sm">
-      <label for="month-select" class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Select Month</label>
-      <input type="month" id="month-select" name="month" value="<%= selectedMonth %>" 
-             onchange="this.form.submit()" 
-             class="bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-xs py-1.5 px-3 focus:outline-none focus:border-[#C29B5C]">
-    </form>
+    <div class="flex items-center space-x-3 flex-wrap md:flex-nowrap">
+      <!-- Month Filter Form -->
+      <form action="/dashboard" method="GET" class="flex items-center space-x-3 bg-slate-900 border border-slate-800 p-2 rounded-xl shadow-sm">
+        <label for="month-select" class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Select Month</label>
+        <input type="month" id="month-select" name="month" value="<%= selectedMonth %>" 
+               onchange="this.form.submit()" 
+               class="bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-xs py-1.5 px-3 focus:outline-none focus:border-[#C29B5C]">
+      </form>
+
+      <!-- Clear Database Button (Admin only) -->
+      <form action="/dashboard/clear-database" method="POST" onsubmit="return confirm('WARNING: Are you sure you want to clear the database? This will permanently delete all clients, payments, tasks, and team member accounts! Only your admin account will be kept.')">
+        <button type="submit" class="bg-red-950/40 hover:bg-red-900/60 text-red-400 hover:text-red-200 border border-red-900/30 hover:border-red-800/50 font-bold py-2.5 px-4 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm h-[38px]">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Clear Database</span>
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- Main Metric Cards -->

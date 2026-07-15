@@ -126,6 +126,11 @@
                       <a href="/clients/<%= client.id %>/edit" class="text-slate-400 hover:text-brand-gold transition-colors" title="Edit client">
                         <i class="fa-solid fa-pen-to-square text-base"></i>
                       </a>
+                      <form action="/clients/<%= client.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete <%= client.name %>? This will permanently delete all related tasks and payments!')">
+                        <button type="submit" class="text-slate-400 hover:text-red-400 transition-colors align-middle" title="Delete client">
+                          <i class="fa-solid fa-trash text-base"></i>
+                        </button>
+                      </form>
                     <% } %>
                   </div>
                 </td>
