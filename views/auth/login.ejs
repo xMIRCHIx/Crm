@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Growlix CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Tailwind CDN fallback -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#C29B5C',
+              'gold-dark': '#A98246'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1 { font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+    <!-- Top gold decoration line -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-[#C29B5C]"></div>
+
+    <!-- Logo and Heading -->
+    <div class="text-center mb-8">
+      <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-tr from-yellow-600 to-amber-400 flex items-center justify-center shadow-lg mb-4">
+        <i class="fa-solid fa-crown text-slate-950 font-bold text-xl"></i>
+      </div>
+      <h1 class="text-2xl font-extrabold text-slate-100 tracking-tight">Welcome to Growlix</h1>
+      <p class="text-slate-400 text-xs mt-1.5 font-medium uppercase tracking-wider">CRM Administration Console</p>
+    </div>
+
+    <!-- Flash message alerts -->
+    <% if (error && error.length > 0) { %>
+      <div class="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 p-3.5 rounded-xl flex items-start space-x-2.5 text-xs">
+        <i class="fa-solid fa-circle-exclamation text-base mt-0.5 flex-shrink-0"></i>
+        <p class="font-medium"><%= error %></p>
+      </div>
+    <% } %>
+
+    <% if (success && success.length > 0) { %>
+      <div class="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-3.5 rounded-xl flex items-start space-x-2.5 text-xs">
+        <i class="fa-solid fa-circle-check text-base mt-0.5 flex-shrink-0"></i>
+        <p class="font-medium"><%= success %></p>
+      </div>
+    <% } %>
+
+    <!-- Login Form -->
+    <form action="/login" method="POST" class="space-y-5">
+      <!-- Email Field -->
+      <div>
+        <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Address</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+            <i class="fa-solid fa-envelope"></i>
+          </span>
+          <input type="email" name="email" id="email" required
+            placeholder="name@example.com"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C] focus:ring-1 focus:ring-[#C29B5C]/30 transition duration-150">
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Password</label>
+        </div>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+            <i class="fa-solid fa-lock"></i>
+          </span>
+          <input type="password" name="password" id="password" required
+            placeholder="••••••••"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-[#C29B5C] focus:ring-1 focus:ring-[#C29B5C]/30 transition duration-150">
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-150 shadow-lg tracking-wider text-sm mt-3 uppercase">
+        Sign In
+      </button>
+    </form>
+  </div>
+</body>
+</html>

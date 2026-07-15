@@ -1,0 +1,89 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Team Management</h1>
+      <p class="text-sm text-slate-400 mt-1">Manage team member credentials, departments, and active workloads.</p>
+    </div>
+    <a href="/team/new" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 shadow-md text-xs uppercase tracking-wider flex items-center space-x-1.5">
+      <i class="fa-solid fa-user-plus"></i>
+      <span>Add Member</span>
+    </a>
+  </div>
+
+  <!-- Team Members Table -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-300">
+        <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+          <tr>
+            <th class="px-6 py-4 font-semibold">Name & Contact</th>
+            <th class="px-6 py-4 font-semibold">Department</th>
+            <th class="px-6 py-4 font-semibold">Role</th>
+            <th class="px-6 py-4 font-semibold">Status</th>
+            <th class="px-6 py-4 font-semibold text-center">Active Task Load</th>
+            <th class="px-6 py-4 font-semibold text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+          <% teamMembers.forEach(member => { %>
+            <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+              <!-- Name & Contact -->
+              <td class="px-6 py-4">
+                <div class="font-semibold text-slate-100"><%= member.name %></div>
+                <div class="text-xs text-slate-500 mt-0.5"><%= member.email %> &bull; <%= member.phone || 'No phone' %></div>
+              </td>
+              
+              <!-- Department -->
+              <td class="px-6 py-4 text-xs font-semibold text-slate-400 capitalize">
+                <%= member.department || 'Management' %>
+              </td>
+
+              <!-- Role Badge -->
+              <td class="px-6 py-4">
+                <% if (member.role === 'admin') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-[#C29B5C]/15 text-[#C29B5C] border border-[#C29B5C]/20 uppercase tracking-wide">Admin</span>
+                <% } else { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-400 border border-slate-700 uppercase tracking-wide">Team Member</span>
+                <% } %>
+              </td>
+
+              <!-- Status -->
+              <td class="px-6 py-4">
+                <% if (member.status === 'active') { %>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Active</span>
+                <% } else { %>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-wide">Inactive</span>
+                <% } %>
+              </td>
+
+              <!-- Task Load Count -->
+              <td class="px-6 py-4 text-center">
+                <% if (member.role === 'admin') { %>
+                  <span class="text-xs text-slate-600 font-medium">N/A</span>
+                <% } else { %>
+                  <span class="px-2 py-1 rounded-lg text-xs font-bold <%= member.active_tasks_count > 3 ? 'bg-red-500/10 text-red-400' : 'bg-slate-950 text-slate-300' %>">
+                    <%= member.active_tasks_count %> active
+                  </span>
+                <% } %>
+              </td>
+
+              <!-- Action Links -->
+              <td class="px-6 py-4 text-center">
+                <div class="flex items-center justify-center space-x-3">
+                  <a href="/team/<%= member.id %>" class="text-slate-400 hover:text-slate-200 transition-colors" title="View workload & tasks">
+                    <i class="fa-solid fa-network-wired text-base"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

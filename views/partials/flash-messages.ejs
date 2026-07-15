@@ -1,0 +1,17 @@
+<% if (flash && flash.success && flash.success.length > 0) { %>
+  <div class="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-xl flex items-start space-x-3 shadow-sm" role="alert">
+    <i class="fa-solid fa-circle-check text-lg mt-0.5 flex-shrink-0"></i>
+    <div class="flex-1">
+      <p class="text-sm font-medium"><%= flash.success %></p>
+    </div>
+  </div>
+<% } %>
+
+<% if (flash && flash.error && flash.error.length > 0) { %>
+  <div class="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl flex items-start space-x-3 shadow-sm" role="alert">
+    <i class="fa-solid fa-circle-exclamation text-lg mt-0.5 flex-shrink-0"></i>
+    <div class="flex-1">
+      <p class="text-sm font-medium"><%= flash.error %></p>
+    </div>
+  </div>
+<% } %>

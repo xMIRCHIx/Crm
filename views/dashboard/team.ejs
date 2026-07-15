@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Title section -->
+  <div>
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">My Workspace</h1>
+    <p class="text-sm text-slate-400 mt-1">Hello, <%= user.name %>! Here is your work overview for today.</p>
+  </div>
+
+  <!-- Metric status cards for tasks -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <!-- Total Assigned -->
+    <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group shadow-md">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400 text-5xl">
+        <i class="fa-solid fa-list-check"></i>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Tasks</p>
+      <h3 class="text-3xl font-black text-slate-100 mt-3"><%= taskStats.total %></h3>
+    </div>
+
+    <!-- In Progress -->
+    <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group shadow-md">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-amber-500 text-5xl">
+        <i class="fa-solid fa-spinner"></i>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-wider text-slate-500">In Progress</p>
+      <h3 class="text-3xl font-black text-amber-400 mt-3"><%= taskStats.in_progress %></h3>
+    </div>
+
+    <!-- Under Review -->
+    <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group shadow-md">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-purple-500 text-5xl">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Under Review</p>
+      <h3 class="text-3xl font-black text-purple-400 mt-3"><%= taskStats.under_review %></h3>
+    </div>
+
+    <!-- Completed -->
+    <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group shadow-md">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-emerald-500 text-5xl">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Completed</p>
+      <h3 class="text-3xl font-black text-emerald-400 mt-3"><%= taskStats.completed %></h3>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Panels -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Tasks Summary list (left 2 cols) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:col-span-2 shadow-md flex flex-col">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-slate-100 tracking-tight">Active Task Focus</h3>
+          <p class="text-xs text-slate-400 mt-1">Pending tasks sorted by priority and due date.</p>
+        </div>
+        <a href="/tasks" class="text-xs font-semibold text-brand-gold hover:text-slate-100 transition-colors">
+          View All Tasks &rarr;
+        </a>
+      </div>
+
+      <div class="flex-1">
+        <!-- We will prompt them to view details on the tasks route, but let's list some tasks or actions here -->
+        <p class="text-slate-400 text-sm mb-4">Please navigate to <a href="/tasks" class="text-brand-gold hover:underline">My Tasks</a> to update execution status, add logs, or request reviews from the Administrator.</p>
+        
+        <div class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-5 flex items-center justify-between">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 text-[#C29B5C]">
+              <i class="fa-solid fa-clipboard-list text-lg"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold text-slate-200">Tasks Checklist</h4>
+              <p class="text-xs text-slate-500 mt-0.5">Tasks requiring action: <%= taskStats.total - taskStats.completed %> remaining</p>
+            </div>
+          </div>
+          <a href="/tasks" class="bg-[#C29B5C] hover:bg-amber-600 text-slate-950 font-bold py-2 px-4 rounded-xl text-xs transition duration-150">
+            Open Task Console
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Linked Clients (right 1 col) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-bold text-slate-100 tracking-tight mb-2">My Clients</h3>
+      <p class="text-xs text-slate-400 mb-6">Clients associated with your assigned tasks.</p>
+
+      <% if (recentClients.length === 0) { %>
+        <div class="text-center py-8 text-slate-600 text-sm">
+          <i class="fa-solid fa-user-slash text-2xl mb-2 block"></i>
+          No clients linked to your current assignments.
+        </div>
+      <% } else { %>
+        <div class="space-y-4">
+          <% recentClients.forEach(client => { %>
+            <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700/80 transition-colors duration-150">
+              <div>
+                <h4 class="text-sm font-semibold text-slate-200"><%= client.name %></h4>
+                <p class="text-[10px] text-slate-500 capitalize mt-0.5"><%= client.service_type.replace('_', ' ') %></p>
+              </div>
+              <div>
+                <% if (client.status === 'lead') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-sky-500/10 text-sky-400 uppercase tracking-wider">Lead</span>
+                <% } else if (client.status === 'ongoing') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/10 text-amber-400 uppercase tracking-wider">Ongoing</span>
+                <% } else if (client.status === 'completed') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 uppercase tracking-wider">Done</span>
+                <% } else if (client.status === 'on_hold') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-red-500/10 text-red-400 uppercase tracking-wider">On Hold</span>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

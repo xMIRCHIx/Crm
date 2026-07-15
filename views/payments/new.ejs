@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-xl mx-auto space-y-8 animate-fade-in">
+  <!-- Back navigation & header -->
+  <div class="flex items-center space-x-3">
+    <a href="/payments" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Ledger">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-100">Record Payment Transaction</h1>
+      <p class="text-xs text-slate-400 mt-1">Record credits received from clients to auto-calculate project balances.</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-sm">
+    <form action="/payments/new" method="POST" class="space-y-5">
+      <!-- Associated Client -->
+      <div>
+        <label for="client_id" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Associated Client *</label>
+        <select name="client_id" id="client_id" required
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+          <option value="" disabled <%= !preSelectedClient ? 'selected' : '' %>>Select Client...</option>
+          <% clients.forEach(client => { %>
+            <option value="<%= client.id %>" <%= preSelectedClient == client.id ? 'selected' : '' %>>
+              <%= client.name %> (Pending: ₹<%= parseFloat(client.pending_amount).toLocaleString('en-IN') %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Amount -->
+      <div>
+        <label for="amount" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Amount Received (₹) *</label>
+        <input type="number" name="amount" id="amount" required min="0.01" step="0.01" placeholder="e.g. 25000"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Payment Type -->
+        <div>
+          <label for="payment_type" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Payment Type *</label>
+          <select name="payment_type" id="payment_type" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="advance">Advance</option>
+            <option value="partial" selected>Partial</option>
+            <option value="final">Final Settlement</option>
+          </select>
+        </div>
+
+        <!-- Payment Mode -->
+        <div>
+          <label for="payment_mode" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Payment Mode *</label>
+          <select name="payment_mode" id="payment_mode" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="upi">UPI / Net Banking</option>
+            <option value="bank_transfer" selected>Bank Transfer (IMPS/NEFT)</option>
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Payment Date -->
+      <div>
+        <label for="payment_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Payment Date *</label>
+        <input type="date" name="payment_date" id="payment_date" required
+               value="<%= new Date().toISOString().split('T')[0] %>"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Remarks / Notes -->
+      <div>
+        <label for="notes" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Remarks / Notes</label>
+        <textarea name="notes" id="notes" rows="3" placeholder="Reference transaction ID, bank confirmation codes, etc..."
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C] resize-none"></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
+        <a href="/payments" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-6 rounded-xl transition duration-150 text-sm uppercase tracking-wider shadow-lg flex items-center space-x-2">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Save Transaction</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

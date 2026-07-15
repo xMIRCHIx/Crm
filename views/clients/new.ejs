@@ -1,0 +1,99 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-3xl mx-auto space-y-8 animate-fade-in">
+  <!-- Back Button & Page title -->
+  <div class="flex items-center space-x-3">
+    <a href="/clients" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Registry">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-100">Add New Client</h1>
+      <p class="text-xs text-slate-400 mt-1">Onboard a new client and configure initial project values.</p>
+    </div>
+  </div>
+
+  <!-- Client Creation Form -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-sm">
+    <form action="/clients/new" method="POST" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Client Name -->
+        <div class="md:col-span-2">
+          <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Client / Company Name *</label>
+          <input type="text" name="name" id="name" required placeholder="e.g. Acme Tech Corporation"
+                 class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+        </div>
+
+        <!-- Phone Number -->
+        <div>
+          <label for="phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Contact Number</label>
+          <input type="tel" name="phone" id="phone" placeholder="e.g. +91 98765 43210"
+                 class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+        </div>
+
+        <!-- Email Address -->
+        <div>
+          <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Address</label>
+          <input type="email" name="email" id="email" placeholder="e.g. client@company.com"
+                 class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+        </div>
+
+        <!-- Service Type -->
+        <div>
+          <label for="service_type" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Service Type *</label>
+          <select name="service_type" id="service_type" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="videography">Videography</option>
+            <option value="photography">Photography</option>
+            <option value="editing">Video Editing</option>
+            <option value="social_media">Social Media Marketing</option>
+            <option value="web_dev">Web/Software Development</option>
+            <option value="multiple">Multiple / Full Retainer</option>
+          </select>
+        </div>
+
+        <!-- Project Status -->
+        <div>
+          <label for="status" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Initial Status *</label>
+          <select name="status" id="status" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="lead" selected>Lead</option>
+            <option value="ongoing">Ongoing</option>
+            <option value="completed">Completed</option>
+            <option value="on_hold">On Hold</option>
+          </select>
+        </div>
+
+        <!-- Total Project Value -->
+        <div>
+          <label for="total_value" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Total Project Value (₹) *</label>
+          <input type="number" name="total_value" id="total_value" required min="0" step="0.01" placeholder="e.g. 50000"
+                 class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+        </div>
+
+        <!-- Address -->
+        <div class="md:col-span-2">
+          <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Address</label>
+          <textarea name="address" id="address" rows="3" placeholder="Client physical office address..."
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C] resize-none"></textarea>
+        </div>
+
+        <!-- Notes / Remarks -->
+        <div class="md:col-span-2">
+          <label for="notes" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Project Brief / Remarks</label>
+          <textarea name="notes" id="notes" rows="4" placeholder="Brief project scope details, deadlines, and milestone schedules..."
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C] resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
+        <a href="/clients" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-8 rounded-xl transition duration-150 text-sm uppercase tracking-wider shadow-lg">
+          Add Client
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

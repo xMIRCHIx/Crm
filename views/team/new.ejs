@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-xl mx-auto space-y-8 animate-fade-in">
+  <!-- Back Button & Page title -->
+  <div class="flex items-center space-x-3">
+    <a href="/team" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Team Directory">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-100">Add Team Member</h1>
+      <p class="text-xs text-slate-400 mt-1">Register a team account. The system will auto-generate a temporary password.</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-sm">
+    <form action="/team/new" method="POST" class="space-y-6">
+      <!-- Full Name -->
+      <div>
+        <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Full Name *</label>
+        <input type="text" name="name" id="name" required placeholder="e.g. Aarav Sharma"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Email Address -->
+      <div>
+        <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Address *</label>
+        <input type="email" name="email" id="email" required placeholder="e.g. editor@growlix.com"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Phone Number -->
+      <div>
+        <label for="phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Contact Number</label>
+        <input type="tel" name="phone" id="phone" placeholder="e.g. +91 98765 43211"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Department/Specialty -->
+      <div>
+        <label for="department" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Department / Specialty</label>
+        <select name="department" id="department"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+          <option value="Video Editor">Video Editor</option>
+          <option value="Photographer">Photographer</option>
+          <option value="Social Media Manager">Social Media Manager</option>
+          <option value="Web Developer">Web Developer</option>
+        </select>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
+        <a href="/team" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-6 rounded-xl transition duration-150 text-sm uppercase tracking-wider shadow-lg flex items-center space-x-2">
+          <i class="fa-solid fa-key"></i>
+          <span>Generate Account</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,142 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex items-center space-x-3">
+    <a href="/team" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Directory">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100"><%= member.name %></h1>
+      <p class="text-sm text-slate-400 mt-1 capitalize"><%= member.department %> &bull; Staff Profile & Workload</p>
+    </div>
+  </div>
+
+  <!-- Profile & Metrics Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Info Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Profile Details</h3>
+      <div class="space-y-3 text-sm">
+        <div>
+          <span class="text-xs text-slate-500 block">Email Address</span>
+          <span class="text-slate-300 font-medium select-all"><%= member.email %></span>
+        </div>
+        <div>
+          <span class="text-xs text-slate-500 block">Phone Number</span>
+          <span class="text-slate-300 select-all"><%= member.phone || 'Not configured' %></span>
+        </div>
+        <div>
+          <span class="text-xs text-slate-500 block">Role Badge</span>
+          <span class="mt-1 block">
+            <% if (member.role === 'admin') { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C29B5C]/15 text-[#C29B5C] border border-[#C29B5C]/20 uppercase tracking-wide">Admin</span>
+            <% } else { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700 uppercase tracking-wide">Team Member</span>
+            <% } %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Summary Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4 col-span-2">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Task Load Summary</h3>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <!-- Total Tasks -->
+        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <span class="text-xs text-slate-500 block uppercase font-bold tracking-wider">Total</span>
+          <span class="text-2xl font-black text-slate-100 mt-1 block"><%= stats.total %></span>
+        </div>
+
+        <!-- In Progress -->
+        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <span class="text-xs text-slate-500 block uppercase font-bold tracking-wider">Active</span>
+          <span class="text-2xl font-black text-amber-400 mt-1 block"><%= stats.in_progress %></span>
+        </div>
+
+        <!-- Under Review -->
+        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <span class="text-xs text-slate-500 block uppercase font-bold tracking-wider">Review</span>
+          <span class="text-2xl font-black text-purple-400 mt-1 block"><%= stats.under_review %></span>
+        </div>
+
+        <!-- Completed -->
+        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <span class="text-xs text-slate-500 block uppercase font-bold tracking-wider">Done</span>
+          <span class="text-2xl font-black text-emerald-400 mt-1 block"><%= stats.completed %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Associated Tasks list -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <div class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+      <div>
+        <h3 class="text-lg font-bold text-slate-100 tracking-tight">Assigned Tasks</h3>
+        <p class="text-xs text-slate-400 mt-1">Full breakdown of tasks assigned to this staff member.</p>
+      </div>
+      <a href="/tasks/new?assigned_to=<%= member.id %>" class="text-xs font-bold text-brand-gold hover:text-slate-200 bg-[#C29B5C]/10 border border-[#C29B5C]/20 hover:bg-[#C29B5C]/20 px-3 py-1.5 rounded-xl transition duration-150 flex items-center space-x-1.5">
+        <i class="fa-solid fa-plus"></i>
+        <span>Assign Task</span>
+      </a>
+    </div>
+
+    <% if (tasks.length === 0) { %>
+      <div class="p-8 text-center text-slate-500 text-sm">
+        This user has no tasks assigned currently.
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+            <tr>
+              <th class="px-6 py-4 font-semibold">Task Title</th>
+              <th class="px-6 py-4 font-semibold">Linked Client</th>
+              <th class="px-6 py-4 font-semibold">Priority</th>
+              <th class="px-6 py-4 font-semibold">Status</th>
+              <th class="px-6 py-4 font-semibold">Due Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+            <% tasks.forEach(task => { %>
+              <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+                <td class="px-6 py-4 font-semibold text-slate-100">
+                  <a href="/tasks/<%= task.id %>" class="hover:text-[#C29B5C] transition-colors"><%= task.title %></a>
+                </td>
+                <td class="px-6 py-4 text-xs font-medium text-slate-400"><%= task.client_name %></td>
+                <td class="px-6 py-4 text-xs font-medium">
+                  <% if (task.priority === 'high') { %>
+                    <span class="text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>High</span>
+                  <% } else if (task.priority === 'medium') { %>
+                    <span class="text-amber-400"><i class="fa-solid fa-circle-exclamation mr-1"></i>Medium</span>
+                  <% } else { %>
+                    <span class="text-slate-400"><i class="fa-solid fa-circle-info mr-1"></i>Low</span>
+                  <% } %>
+                </td>
+                <td class="px-6 py-4">
+                  <% if (task.status === 'not_started') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20 uppercase tracking-wide">Not Started</span>
+                  <% } else if (task.status === 'in_progress') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">In Progress</span>
+                  <% } else if (task.status === 'under_review') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wide">Under Review</span>
+                  <% } else if (task.status === 'completed') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Completed</span>
+                  <% } %>
+                </td>
+                <td class="px-6 py-4 text-xs text-slate-400 select-all">
+                  <%= task.due_date ? new Date(task.due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Deadline' %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

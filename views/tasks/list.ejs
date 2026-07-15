@@ -1,0 +1,174 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">
+        <%= user.role === 'admin' ? 'Task Board' : 'My Tasks' %>
+      </h1>
+      <p class="text-sm text-slate-400 mt-1">
+        <%= user.role === 'admin' ? 'Track execution progress across the entire team force.' : 'View and update your active task assignments.' %>
+      </p>
+    </div>
+    <% if (user.role === 'admin') { %>
+      <a href="/tasks/new" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 shadow-md text-xs uppercase tracking-wider flex items-center space-x-1.5">
+        <i class="fa-solid fa-square-plus"></i>
+        <span>Create Task</span>
+      </a>
+    <% } %>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+    <form action="/tasks" method="GET" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <% if (user.role === 'admin') { %>
+        <!-- Client Filter (Admin only) -->
+        <div>
+          <select name="client_id" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+            <option value="">All Clients</option>
+            <% clients.forEach(client => { %>
+              <option value="<%= client.id %>" <%= filters.client_id == client.id ? 'selected' : '' %>><%= client.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <!-- Assigned To Filter (Admin only) -->
+        <div>
+          <select name="assigned_to" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+            <option value="">All Assignees</option>
+            <% teamMembers.forEach(member => { %>
+              <option value="<%= member.id %>" <%= filters.assigned_to == member.id ? 'selected' : '' %>><%= member.name %></option>
+            <% }) %>
+          </select>
+        </div>
+      <% } %>
+
+      <!-- Status Filter -->
+      <div class="<%= user.role !== 'admin' ? 'sm:col-span-2' : '' %>">
+        <select name="status" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+          <option value="">All Statuses</option>
+          <option value="not_started" <%= filters.status === 'not_started' ? 'selected' : '' %>>Not Started</option>
+          <option value="in_progress" <%= filters.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+          <option value="under_review" <%= filters.status === 'under_review' ? 'selected' : '' %>>Under Review</option>
+          <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+      </div>
+
+      <!-- Priority Filter -->
+      <div class="<%= user.role !== 'admin' ? 'sm:col-span-2' : '' %>">
+        <select name="priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+          <option value="">All Priorities</option>
+          <option value="low" <%= filters.priority === 'low' ? 'selected' : '' %>>Low</option>
+          <option value="medium" <%= filters.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+          <option value="high" <%= filters.priority === 'high' ? 'selected' : '' %>>High</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex space-x-2 lg:col-span-1 md:col-span-4 sm:col-span-2">
+        <button type="submit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2 px-4 rounded-xl text-xs transition duration-150">
+          Apply Filters
+        </button>
+        <a href="/tasks" class="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 font-semibold py-2 px-4 rounded-xl text-xs transition duration-150 flex items-center justify-center font-bold" title="Reset Filters">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tasks List Table -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <% if (tasks.length === 0) { %>
+      <div class="p-8 text-center text-slate-500 text-sm">
+        <i class="fa-solid fa-clipboard-list text-2xl mb-2 block text-slate-600"></i>
+        No tasks found matching your filters.
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+            <tr>
+              <th class="px-6 py-4 font-semibold">Task Title</th>
+              <th class="px-6 py-4 font-semibold">Linked Client</th>
+              <% if (user.role === 'admin') { %>
+                <th class="px-6 py-4 font-semibold">Assigned To</th>
+              <% } %>
+              <th class="px-6 py-4 font-semibold">Priority</th>
+              <th class="px-6 py-4 font-semibold">Status</th>
+              <th class="px-6 py-4 font-semibold">Due Date</th>
+              <th class="px-6 py-4 font-semibold text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+            <% tasks.forEach(task => { %>
+              <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+                <!-- Title -->
+                <td class="px-6 py-4 font-semibold text-slate-100">
+                  <a href="/tasks/<%= task.id %>" class="hover:text-[#C29B5C] transition-colors"><%= task.title %></a>
+                </td>
+
+                <!-- Client -->
+                <td class="px-6 py-4 text-xs text-slate-400">
+                  <%= task.client_name %>
+                </td>
+
+                <!-- Assignee (Admin only) -->
+                <% if (user.role === 'admin') { %>
+                  <td class="px-6 py-4 text-xs text-slate-300 font-medium">
+                    <%= task.assignee_name %>
+                  </td>
+                <% } %>
+
+                <!-- Priority -->
+                <td class="px-6 py-4 text-xs font-semibold">
+                  <% if (task.priority === 'high') { %>
+                    <span class="text-red-400"><i class="fa-solid fa-circle-exclamation mr-1"></i>High</span>
+                  <% } else if (task.priority === 'medium') { %>
+                    <span class="text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Medium</span>
+                  <% } else { %>
+                    <span class="text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Low</span>
+                  <% } %>
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4">
+                  <% if (task.status === 'not_started') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20 uppercase tracking-wide">Not Started</span>
+                  <% } else if (task.status === 'in_progress') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">In Progress</span>
+                  <% } else if (task.status === 'under_review') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wide">Under Review</span>
+                  <% } else if (task.status === 'completed') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Completed</span>
+                  <% } %>
+                </td>
+
+                <!-- Due Date -->
+                <td class="px-6 py-4 text-xs text-slate-400 select-all">
+                  <%= task.due_date ? new Date(task.due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Deadline' %>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4 text-center">
+                  <div class="flex items-center justify-center space-x-3">
+                    <a href="/tasks/<%= task.id %>" class="text-slate-400 hover:text-slate-200 transition-colors" title="View details">
+                      <i class="fa-solid fa-eye text-base"></i>
+                    </a>
+                    <% if (user.role === 'admin') { %>
+                      <a href="/tasks/<%= task.id %>/edit" class="text-slate-400 hover:text-brand-gold transition-colors" title="Edit task details">
+                        <i class="fa-solid fa-pen-to-square text-base"></i>
+                      </a>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

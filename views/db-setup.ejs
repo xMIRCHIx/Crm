@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Setup Needed | Growlix CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Tailwind CDN fallback to render layout correctly when css output build fails or is missing -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#C29B5C',
+              'gold-dark': '#A98246'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-6">
+  <div class="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
+    <!-- Top glowing accent -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-amber-500 to-brand-gold"></div>
+
+    <div class="flex items-center space-x-4 mb-8">
+      <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 text-2xl">
+        <i class="fa-solid fa-database"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-100">Database Connection Required</h1>
+        <p class="text-sm text-slate-400">Growlix CRM was unable to establish a database session.</p>
+      </div>
+    </div>
+
+    <!-- Error Callout -->
+    <% if (dbError) { %>
+      <div class="mb-8 bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl flex items-start space-x-3 text-sm">
+        <i class="fa-solid fa-triangle-exclamation text-lg mt-0.5 flex-shrink-0"></i>
+        <div>
+          <span class="font-semibold block mb-1">Error Message:</span>
+          <code class="block font-mono bg-slate-950/80 p-2.5 rounded border border-slate-800 text-xs text-red-300 break-all select-all"><%= dbError %></code>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Actionable Steps -->
+    <div class="space-y-6">
+      <h2 class="text-lg font-semibold text-slate-200">How to fix this issue:</h2>
+      
+      <div class="space-y-4">
+        <!-- Step 1 -->
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-brand-gold text-sm">1</div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200">Configure Environment Variables</h3>
+            <p class="text-xs text-slate-400 mt-1">Copy the <code class="font-mono bg-slate-950 px-1 py-0.5 rounded text-brand-gold">.env.example</code> file to <code class="font-mono bg-slate-950 px-1 py-0.5 rounded text-brand-gold">.env</code> in the project root and fill in your MariaDB/MySQL credentials.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-brand-gold text-sm">2</div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200">Initialize Database Schema</h3>
+            <p class="text-xs text-slate-400 mt-1">Create the tables in your database using the script at <code class="font-mono bg-slate-950 px-1 py-0.5 rounded">db/schema.sql</code>.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-brand-gold text-sm">3</div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200">Seed Default Accounts</h3>
+            <p class="text-xs text-slate-400 mt-1">Run <code class="font-mono bg-slate-950 px-1 py-0.5 rounded">db/seed.sql</code> to load default admin (<code class="font-mono text-brand-gold bg-slate-950 px-1 py-0.5 rounded">growlixproduction@gmail.com</code> / password: <code class="font-mono text-brand-gold bg-slate-950 px-1 py-0.5 rounded">adminpassword</code>) and team accounts.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-brand-gold text-sm">4</div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200">Restart Server</h3>
+            <p class="text-xs text-slate-400 mt-1">Restart the node server process to reconnect to the database.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reload Button -->
+    <div class="mt-10 pt-6 border-t border-slate-800 flex justify-end">
+      <button onclick="window.location.reload()" class="bg-gradient-to-r from-yellow-600 to-brand-gold hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 flex items-center space-x-2">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        <span>Retry Connection</span>
+      </button>
+    </div>
+  </div>
+</body>
+</html>

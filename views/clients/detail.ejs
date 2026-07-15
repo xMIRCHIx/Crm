@@ -1,0 +1,234 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Header Bar -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <div class="flex items-center space-x-3">
+      <a href="/clients" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Registry">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-100"><%= client.name %></h1>
+        <p class="text-sm text-slate-400 mt-1 capitalize"><%= client.service_type.replace('_', ' ') %> &bull; Client profile</p>
+      </div>
+    </div>
+
+    <div class="flex space-x-3">
+      <% if (user.role === 'admin') { %>
+        <a href="/clients/<%= client.id %>/edit" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 font-bold py-2.5 px-5 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Edit Details</span>
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Client Financial & Basic Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Contact Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Client Contacts</h3>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-start space-x-3">
+          <i class="fa-solid fa-envelope text-slate-500 mt-0.5 w-4 text-center"></i>
+          <div>
+            <span class="text-xs text-slate-500 block">Email Address</span>
+            <a href="mailto:<%= client.email %>" class="text-slate-300 hover:text-[#C29B5C] break-all select-all"><%= client.email || 'N/A' %></a>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <i class="fa-solid fa-phone text-slate-500 mt-0.5 w-4 text-center"></i>
+          <div>
+            <span class="text-xs text-slate-500 block">Phone Number</span>
+            <span class="text-slate-300 select-all"><%= client.phone || 'N/A' %></span>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <i class="fa-solid fa-location-dot text-slate-500 mt-0.5 w-4 text-center"></i>
+          <div>
+            <span class="text-xs text-slate-500 block">Office Address</span>
+            <span class="text-slate-300"><%= client.address || 'N/A' %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Metrics Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Project Metrics</h3>
+      <div class="space-y-3 text-sm">
+        <div>
+          <span class="text-xs text-slate-500 block">Workflow Status</span>
+          <div class="mt-1">
+            <% if (client.status === 'lead') { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-wide">Lead</span>
+            <% } else if (client.status === 'ongoing') { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">Ongoing</span>
+            <% } else if (client.status === 'completed') { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Completed</span>
+            <% } else if (client.status === 'on_hold') { %>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20 uppercase tracking-wide">On Hold</span>
+            <% } %>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs text-slate-500 block">Created On</span>
+          <span class="text-slate-300"><%= new Date(client.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+        </div>
+        <div>
+          <span class="text-xs text-slate-500 block">Registered By</span>
+          <span class="text-slate-300 font-semibold"><%= client.creator_name || 'System Admin' %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Billing & Accounts</h3>
+      <div class="space-y-4 text-sm">
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">Total Project Value:</span>
+          <span class="font-bold text-slate-200 select-all">₹<%= parseFloat(client.total_value).toLocaleString('en-IN') %></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">Amount Received:</span>
+          <span class="font-bold text-emerald-400 select-all">₹<%= parseFloat(client.paid_amount).toLocaleString('en-IN') %></span>
+        </div>
+        <div class="flex justify-between items-center border-t border-slate-800 pt-3">
+          <span class="text-xs font-semibold text-slate-300">Outstanding Balance:</span>
+          <span class="font-black text-[#C29B5C] text-lg select-all">₹<%= parseFloat(client.pending_amount).toLocaleString('en-IN') %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Project Notes -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Project Brief / Notes</h3>
+    <div class="mt-4 text-slate-300 text-sm whitespace-pre-line leading-relaxed">
+      <%= client.notes || 'No project notes or remarks configured for this client.' %>
+    </div>
+  </div>
+
+  <!-- Associated Tasks -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <div class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+      <div>
+        <h3 class="text-lg font-bold text-slate-100 tracking-tight">Assigned Tasks</h3>
+        <p class="text-xs text-slate-400 mt-1">Status of tasks linked to this client.</p>
+      </div>
+      <% if (user.role === 'admin') { %>
+        <a href="/tasks/new?client_id=<%= client.id %>" class="text-xs font-bold text-brand-gold hover:text-slate-200 bg-[#C29B5C]/10 border border-[#C29B5C]/20 hover:bg-[#C29B5C]/20 px-3 py-1.5 rounded-xl transition duration-150 flex items-center space-x-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>Create Task</span>
+        </a>
+      <% } %>
+    </div>
+
+    <% if (tasks.length === 0) { %>
+      <div class="p-8 text-center text-slate-500 text-sm">
+        No tasks assigned for this client.
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+            <tr>
+              <th class="px-6 py-4 font-semibold">Task Title</th>
+              <th class="px-6 py-4 font-semibold">Assigned To</th>
+              <th class="px-6 py-4 font-semibold">Priority</th>
+              <th class="px-6 py-4 font-semibold">Status</th>
+              <th class="px-6 py-4 font-semibold">Due Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+            <% tasks.forEach(task => { %>
+              <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+                <td class="px-6 py-4 font-semibold text-slate-100">
+                  <a href="/tasks/<%= task.id %>" class="hover:text-[#C29B5C] transition-colors"><%= task.title %></a>
+                </td>
+                <td class="px-6 py-4 text-xs font-medium text-slate-400"><%= task.assignee_name %></td>
+                <td class="px-6 py-4 text-xs font-medium">
+                  <% if (task.priority === 'high') { %>
+                    <span class="text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>High</span>
+                  <% } else if (task.priority === 'medium') { %>
+                    <span class="text-amber-400"><i class="fa-solid fa-circle-exclamation mr-1"></i>Medium</span>
+                  <% } else { %>
+                    <span class="text-slate-400"><i class="fa-solid fa-circle-info mr-1"></i>Low</span>
+                  <% } %>
+                </td>
+                <td class="px-6 py-4">
+                  <% if (task.status === 'not_started') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20 uppercase tracking-wide">Not Started</span>
+                  <% } else if (task.status === 'in_progress') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">In Progress</span>
+                  <% } else if (task.status === 'under_review') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wide">Under Review</span>
+                  <% } else if (task.status === 'completed') { %>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Completed</span>
+                  <% } %>
+                </td>
+                <td class="px-6 py-4 text-xs text-slate-400 select-all">
+                  <%= task.due_date ? new Date(task.due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Deadline' %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Billing / Payments History -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <div class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+      <div>
+        <h3 class="text-lg font-bold text-slate-100 tracking-tight">Payment Ledger</h3>
+        <p class="text-xs text-slate-400 mt-1">Historical ledger of transaction credits.</p>
+      </div>
+      <% if (user.role === 'admin') { %>
+        <a href="/payments/new?client_id=<%= client.id %>" class="text-xs font-bold text-brand-gold hover:text-slate-200 bg-[#C29B5C]/10 border border-[#C29B5C]/20 hover:bg-[#C29B5C]/20 px-3 py-1.5 rounded-xl transition duration-150 flex items-center space-x-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>Record Payment</span>
+        </a>
+      <% } %>
+    </div>
+
+    <% if (payments.length === 0) { %>
+      <div class="p-8 text-center text-slate-500 text-sm">
+        No payment records found for this client.
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+            <tr>
+              <th class="px-6 py-4 font-semibold">Payment Date</th>
+              <th class="px-6 py-4 font-semibold text-right">Amount</th>
+              <th class="px-6 py-4 font-semibold">Type</th>
+              <th class="px-6 py-4 font-semibold">Mode</th>
+              <th class="px-6 py-4 font-semibold">Recorded By</th>
+              <th class="px-6 py-4 font-semibold">Notes</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+            <% payments.forEach(payment => { %>
+              <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+                <td class="px-6 py-4 text-xs font-medium select-all">
+                  <%= new Date(payment.payment_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </td>
+                <td class="px-6 py-4 text-right text-emerald-400 font-bold select-all">₹<%= parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) %></td>
+                <td class="px-6 py-4 text-xs capitalize"><span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300"><%= payment.payment_type %></span></td>
+                <td class="px-6 py-4 text-xs uppercase font-semibold text-slate-400"><%= payment.payment_mode.replace('_', ' ') %></td>
+                <td class="px-6 py-4 text-xs text-slate-400"><%= payment.recorder_name %></td>
+                <td class="px-6 py-4 text-xs text-slate-400 max-w-xs truncate" title="<%= payment.notes %>"><%= payment.notes || '-' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

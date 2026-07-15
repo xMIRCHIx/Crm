@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growlix CRM</title>
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS Output -->
+  <link rel="stylesheet" href="/css/output.css">
+  <!-- FontAwesome Icons for Dashboard icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6, .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+    /* Brand color definition fallback/helpers */
+    .text-brand-gold { color: #C29B5C; }
+    .bg-brand-gold { bg-color: #C29B5C; }
+    .border-brand-gold { border-color: #C29B5C; }
+  </style>
+</head>
+<body class="h-full flex overflow-hidden">
+  
+  <!-- Outer Layout Wrapper -->
+  <div class="flex flex-1 h-full overflow-hidden">
+    <!-- Sidebar (Conditionally Rendered by Role) -->
+    <% if (user) { %>
+      <% if (user.role === 'admin') { %>
+        <%- include('sidebar-admin') %>
+      <% } else { %>
+        <%- include('sidebar-team') %>
+      <% } %>
+    <% } %>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto bg-slate-950">
+      
+      <!-- Top Header Navigation -->
+      <% if (user) { %>
+        <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
+          <div class="flex items-center space-x-3">
+            <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold md:inline hidden">Workspace</span>
+            <span class="text-slate-600 md:inline hidden">/</span>
+            <span class="text-sm font-medium text-slate-200 capitalize"><%= path.split('/')[1] || 'Dashboard' %></span>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <div class="text-right hidden sm:block">
+              <p class="text-sm font-semibold text-slate-200"><%= user.name %></p>
+              <p class="text-xs font-medium text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded inline-block mt-0.5 uppercase tracking-wide">
+                <%= user.role === 'admin' ? 'Administrator' : 'Team Member' %>
+              </p>
+            </div>
+            
+            <div class="h-8 w-px bg-slate-800"></div>
+            
+            <a href="/logout" class="text-slate-400 hover:text-red-400 transition-colors duration-150 p-2 rounded-lg hover:bg-slate-800/50" title="Logout">
+              <i class="fa-solid fa-right-from-bracket text-lg"></i>
+            </a>
+          </div>
+        </header>
+      <% } %>
+
+      <!-- Flash Messages Container -->
+      <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+        <%- include('flash-messages') %>

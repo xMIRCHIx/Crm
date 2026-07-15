@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-3xl mx-auto space-y-8 animate-fade-in">
+  <!-- Back navigation & header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+    <div class="flex items-center space-x-3">
+      <a href="/tasks" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to board">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-100"><%= task.title %></h1>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Task #<%= task.id %> details</p>
+      </div>
+    </div>
+    
+    <% if (user.role === 'admin') { %>
+      <a href="/tasks/<%= task.id %>/edit" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 font-bold py-2.5 px-5 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>Edit Details</span>
+      </a>
+    <% } %>
+  </div>
+
+  <!-- Main Info Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Meta details card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4 md:col-span-2">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Task Parameters</h3>
+      
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-xs text-slate-500 block">Associated Client</span>
+          <span class="text-slate-200 font-semibold block mt-1">
+            <% if (user.role === 'admin') { %>
+              <a href="/clients/<%= task.client_id %>" class="hover:text-[#C29B5C] transition-colors"><%= task.client_name %></a>
+            <% } else { %>
+              <%= task.client_name %>
+            <% } %>
+          </span>
+          <span class="text-xs text-slate-500 block mt-0.5"><%= task.client_email %></span>
+        </div>
+
+        <div>
+          <span class="text-xs text-slate-500 block">Assigned Staff</span>
+          <span class="text-slate-200 font-semibold block mt-1"><%= task.assignee_name %></span>
+          <span class="text-xs text-slate-500 block mt-0.5"><%= task.assignee_department %></span>
+        </div>
+
+        <div class="border-t border-slate-800/80 pt-3">
+          <span class="text-xs text-slate-500 block">Priority</span>
+          <span class="mt-1 block font-bold">
+            <% if (task.priority === 'high') { %>
+              <span class="text-red-400"><i class="fa-solid fa-circle-exclamation mr-1"></i>High Priority</span>
+            <% } else if (task.priority === 'medium') { %>
+              <span class="text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Medium Priority</span>
+            <% } else { %>
+              <span class="text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Low Priority</span>
+            <% } %>
+          </span>
+        </div>
+
+        <div class="border-t border-slate-800/80 pt-3">
+          <span class="text-xs text-slate-500 block">Deadline / Due Date</span>
+          <span class="text-slate-200 font-semibold block mt-1 select-all">
+            <%= task.due_date ? new Date(task.due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'No Deadline' %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status modifier card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Progression Status</h3>
+      
+      <!-- Current Status badge representation -->
+      <div class="text-center py-2 bg-slate-950/50 rounded-xl border border-slate-800">
+        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Current State</span>
+        <span class="mt-1.5 inline-block text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider
+          <%= task.status === 'not_started' ? 'bg-slate-500/10 text-slate-400 border border-slate-500/20' : '' %>
+          <%= task.status === 'in_progress' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : '' %>
+          <%= task.status === 'under_review' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : '' %>
+          <%= task.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : '' %>">
+          <%= task.status.replace('_', ' ') %>
+        </span>
+      </div>
+
+      <!-- Modify Status Form -->
+      <form action="/tasks/<%= task.id %>/status" method="POST" class="space-y-3 pt-2">
+        <label for="status" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500">Update Status</label>
+        <div class="flex space-x-2">
+          <select name="status" id="status" required
+                  class="flex-1 bg-slate-950 border border-slate-800 rounded-xl py-2 px-2.5 text-slate-300 text-xs focus:outline-none focus:border-[#C29B5C]">
+            <option value="not_started" <%= task.status === 'not_started' ? 'selected' : '' %>>Not Started</option>
+            <option value="in_progress" <%= task.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="under_review" <%= task.status === 'under_review' ? 'selected' : '' %>>Under Review</option>
+            <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Completed</option>
+          </select>
+          <button type="submit" class="bg-[#C29B5C] hover:bg-amber-600 text-slate-950 px-3 py-2 rounded-xl text-xs font-bold transition duration-150">
+            Apply
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Description Section -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-800 pb-2">Description & Deliverables</h3>
+    <div class="mt-4 text-slate-300 text-sm whitespace-pre-line leading-relaxed">
+      <%= task.description || 'No execution descriptions provided for this assignment.' %>
+    </div>
+  </div>
+
+  <!-- Assignment history log metadata -->
+  <div class="flex justify-between items-center text-[10px] text-slate-500 px-2">
+    <span>Assigned by: <%= task.creator_name %></span>
+    <span>Updated on: <%= new Date(task.updated_at).toLocaleString('en-IN') %></span>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

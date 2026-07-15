@@ -1,0 +1,141 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-8 animate-fade-in">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Clients Registry</h1>
+      <p class="text-sm text-slate-400 mt-1">Manage leads, ongoing contracts, and billing balances.</p>
+    </div>
+    <% if (user.role === 'admin') { %>
+      <a href="/clients/new" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 shadow-md text-xs uppercase tracking-wider flex items-center space-x-1.5">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Add Client</span>
+      </a>
+    <% } %>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+    <form action="/clients" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Search Input -->
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-xs">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input type="text" name="search" value="<%= filters.search %>" placeholder="Search name, email, phone..." 
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-slate-200 text-xs focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Status Filter -->
+      <div>
+        <select name="status" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+          <option value="">All Statuses</option>
+          <option value="lead" <%= filters.status === 'lead' ? 'selected' : '' %>>Lead</option>
+          <option value="ongoing" <%= filters.status === 'ongoing' ? 'selected' : '' %>>Ongoing</option>
+          <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
+          <option value="on_hold" <%= filters.status === 'on_hold' ? 'selected' : '' %>>On Hold</option>
+        </select>
+      </div>
+
+      <!-- Service Type Filter -->
+      <div>
+        <select name="service_type" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
+          <option value="">All Services</option>
+          <option value="videography" <%= filters.service_type === 'videography' ? 'selected' : '' %>>Videography</option>
+          <option value="photography" <%= filters.service_type === 'photography' ? 'selected' : '' %>>Photography</option>
+          <option value="editing" <%= filters.service_type === 'editing' ? 'selected' : '' %>>Video Editing</option>
+          <option value="social_media" <%= filters.service_type === 'social_media' ? 'selected' : '' %>>Social Media</option>
+          <option value="web_dev" <%= filters.service_type === 'web_dev' ? 'selected' : '' %>>Web Development</option>
+          <option value="multiple" <%= filters.service_type === 'multiple' ? 'selected' : '' %>>Multiple Services</option>
+        </select>
+      </div>
+
+      <!-- Submit & Reset -->
+      <div class="flex space-x-2">
+        <button type="submit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2 px-4 rounded-xl text-xs transition duration-150">
+          Apply Filters
+        </button>
+        <a href="/clients" class="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 font-semibold py-2 px-4 rounded-xl text-xs transition duration-150 flex items-center justify-center" title="Reset Filters">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Clients List Table -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+    <% if (clients.length === 0) { %>
+      <div class="p-8 text-center text-slate-500 text-sm">
+        <i class="fa-solid fa-folder-open text-2xl mb-2 block text-slate-600"></i>
+        No clients matching the selected criteria.
+      </div>
+    <% } else { %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="text-xs uppercase tracking-wider text-slate-500 bg-slate-900 border-b border-slate-800/80">
+            <tr>
+              <th class="px-6 py-4 font-semibold">Client Info</th>
+              <th class="px-6 py-4 font-semibold">Service</th>
+              <th class="px-6 py-4 font-semibold">Status</th>
+              <th class="px-6 py-4 font-semibold text-right">Project Value</th>
+              <th class="px-6 py-4 font-semibold text-right text-emerald-500">Paid</th>
+              <th class="px-6 py-4 font-semibold text-right text-brand-gold">Dues</th>
+              <th class="px-6 py-4 font-semibold text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 bg-slate-900/50">
+            <% clients.forEach(client => { %>
+              <tr class="hover:bg-slate-800/30 transition-colors duration-150">
+                <!-- Name & Contacts -->
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-slate-100"><%= client.name %></div>
+                  <div class="text-xs text-slate-500 mt-0.5"><%= client.email || 'No email' %> &bull; <%= client.phone || 'No phone' %></div>
+                </td>
+                
+                <!-- Service Type -->
+                <td class="px-6 py-4 text-xs font-semibold text-slate-400 capitalize">
+                  <%= client.service_type.replace('_', ' ') %>
+                </td>
+
+                <!-- Status Badge -->
+                <td class="px-6 py-4">
+                  <% if (client.status === 'lead') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-wide">Lead</span>
+                  <% } else if (client.status === 'ongoing') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">Ongoing</span>
+                  <% } else if (client.status === 'completed') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">Completed</span>
+                  <% } else if (client.status === 'on_hold') { %>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20 uppercase tracking-wide">On Hold</span>
+                  <% } %>
+                </td>
+
+                <!-- Financial figures (Admin gets full visibility, team member only gets totals if permitted. Since they can access client list, they see values) -->
+                <td class="px-6 py-4 text-right font-medium select-all">₹<%= parseFloat(client.total_value).toLocaleString('en-IN') %></td>
+                <td class="px-6 py-4 text-right text-emerald-400 select-all">₹<%= parseFloat(client.paid_amount).toLocaleString('en-IN') %></td>
+                <td class="px-6 py-4 text-right text-[#C29B5C] font-semibold select-all">₹<%= parseFloat(client.pending_amount).toLocaleString('en-IN') %></td>
+
+                <!-- Action Links -->
+                <td class="px-6 py-4 text-center">
+                  <div class="flex items-center justify-center space-x-3">
+                    <a href="/clients/<%= client.id %>" class="text-slate-400 hover:text-slate-200 transition-colors" title="View details">
+                      <i class="fa-solid fa-eye text-base"></i>
+                    </a>
+                    <% if (user.role === 'admin') { %>
+                      <a href="/clients/<%= client.id %>/edit" class="text-slate-400 hover:text-brand-gold transition-colors" title="Edit client">
+                        <i class="fa-solid fa-pen-to-square text-base"></i>
+                      </a>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,97 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-xl mx-auto space-y-8 animate-fade-in">
+  <!-- Header Bar -->
+  <div class="flex items-center space-x-3">
+    <a href="/tasks/<%= task.id %>" class="text-slate-400 hover:text-slate-200 bg-slate-900 border border-slate-800 p-2.5 rounded-xl transition duration-150 shadow-sm" title="Back to Task Details">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-100">Edit Task: <%= task.title %></h1>
+      <p class="text-xs text-slate-400 mt-1">Modify task credentials, priority states, or change assignees.</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-sm">
+    <form action="/tasks/<%= task.id %>/edit" method="POST" class="space-y-5">
+      <!-- Title -->
+      <div>
+        <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Task Title *</label>
+        <input type="text" name="title" id="title" required value="<%= task.title %>" placeholder="e.g. Color grade wedding reel draft"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Linked Client -->
+      <div>
+        <label for="client_id" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Associated Client *</label>
+        <select name="client_id" id="client_id" required
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+          <% clients.forEach(client => { %>
+            <option value="<%= client.id %>" <%= task.client_id == client.id ? 'selected' : '' %>><%= client.name %> (<%= client.service_type %>)</option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Assigned To -->
+      <div>
+        <label for="assigned_to" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Assign To Team Member *</label>
+        <select name="assigned_to" id="assigned_to" required
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+          <% teamMembers.forEach(member => { %>
+            <option value="<%= member.id %>" <%= task.assigned_to == member.id ? 'selected' : '' %>><%= member.name %> - <%= member.department %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Status -->
+        <div>
+          <label for="status" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Status *</label>
+          <select name="status" id="status" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="not_started" <%= task.status === 'not_started' ? 'selected' : '' %>>Not Started</option>
+            <option value="in_progress" <%= task.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="under_review" <%= task.status === 'under_review' ? 'selected' : '' %>>Under Review</option>
+            <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Completed</option>
+          </select>
+        </div>
+
+        <!-- Priority -->
+        <div>
+          <label for="priority" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Priority *</label>
+          <select name="priority" id="priority" required
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+            <option value="low" <%= task.priority === 'low' ? 'selected' : '' %>>Low</option>
+            <option value="medium" <%= task.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+            <option value="high" <%= task.priority === 'high' ? 'selected' : '' %>>High</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Due Date -->
+      <div>
+        <label for="due_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Due Date / Deadline</label>
+        <input type="date" name="due_date" id="due_date" value="<%= task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : '' %>"
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Task Description / Requirements</label>
+        <textarea name="description" id="description" rows="4" placeholder="Detailed tasks instructions..."
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-sm focus:outline-none focus:border-[#C29B5C] resize-none"><%= task.description %></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
+        <a href="/tasks/<%= task.id %>" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-3 px-8 rounded-xl transition duration-150 text-sm uppercase tracking-wider shadow-lg">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
