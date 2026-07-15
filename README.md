@@ -92,8 +92,8 @@ Open [http://localhost:3000](http://localhost:3000) on your web browser.
 After seeding, use the following logins to test different roles:
 
 - **Admin Account**:
-  - **Email**: `growlixproduction@gmail.com`
-  - **Password**: `adminpassword`
+  - **Email**: `growlix124@gmail.com`
+  - **Password**: `Growlix@2026`
 
 - **Team Member Account (Video Editor)**:
   - **Email**: `editor@growlix.com`

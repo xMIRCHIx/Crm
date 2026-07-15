@@ -85,12 +85,12 @@ CREATE TABLE IF NOT EXISTS activity_log (
 -- PART 2: SEED DATA (MOCK POPULATION FOR TESTING)
 -- =============================================================================
 
--- Default Admin Account (password: adminpassword)
+-- Default Admin Account (password: Growlix@2026)
 INSERT INTO users (name, email, password_hash, role, department, phone, status)
 VALUES (
   'Growlix Admin',
-  'growlixproduction@gmail.com',
-  '$2a$10$wK1mY6nKWh8KkZkCgO/v3.V7aLh3P.1TjK3Zeqt2n81D3k7v0m1Z2',
+  'growlix124@gmail.com',
+  '$2a$10$.C9fhAbqC.xm74bTEbtBtOqtrD6toJyFoxmLm9Mwb5FgpSpT46l52',
   'admin',
   'Management',
   '+919876543210',
