@@ -9,7 +9,7 @@ router.get('/login', (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/dashboard');
   }
-  res.render('auth/login', { error: req.flash('error'), success: req.flash('success') });
+  res.render('auth/login');
 });
 
 // POST /login
