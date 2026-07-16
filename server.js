@@ -8,6 +8,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Setup Template Engine (EJS)
+const ejs = require('ejs');
+app.engine('ejs', (filePath, data, callback) => {
+  ejs.renderFile(filePath, data, { client: false }, callback);
+});
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
