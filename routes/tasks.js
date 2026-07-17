@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin, requireAdminOrManager } = require('../middleware/auth');
 const Task = require('../models/tasks');
 const Client = require('../models/clients');
 const User = require('../models/users');
@@ -47,8 +47,8 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// GET /tasks/new - Create task form (Admin only)
-router.get('/new', requireAuth, requireAdmin, async (req, res) => {
+// GET /tasks/new - Create task form (Admin/Manager)
+router.get('/new', requireAuth, requireAdminOrManager, async (req, res) => {
   const preSelectedClient = req.query.client_id || '';
   const preSelectedAssignee = req.query.assigned_to || '';
 
@@ -68,8 +68,8 @@ router.get('/new', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /tasks/new - Save new task (Admin only)
-router.post('/new', requireAuth, requireAdmin, async (req, res) => {
+// POST /tasks/new - Save new task (Admin/Manager)
+router.post('/new', requireAuth, requireAdminOrManager, async (req, res) => {
   const { title, description, client_id, assigned_to, status, priority, due_date } = req.body;
 
   try {
@@ -121,8 +121,8 @@ router.get('/:id', requireAuth, async (req, res) => {
   }
 });
 
-// GET /tasks/:id/edit - Edit task form (Admin only)
-router.get('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
+// GET /tasks/:id/edit - Edit task form (Admin/Manager)
+router.get('/:id/edit', requireAuth, requireAdminOrManager, async (req, res) => {
   const taskId = parseInt(req.params.id);
 
   try {
@@ -142,8 +142,8 @@ router.get('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /tasks/:id/edit - Update task details (Admin only)
-router.post('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
+// POST /tasks/:id/edit - Update task details (Admin/Manager)
+router.post('/:id/edit', requireAuth, requireAdminOrManager, async (req, res) => {
   const taskId = parseInt(req.params.id);
   const { title, description, client_id, assigned_to, status, priority, due_date } = req.body;
 

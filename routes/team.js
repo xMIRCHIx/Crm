@@ -1,16 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin, requireAdminOrManager } = require('../middleware/auth');
 const User = require('../models/users');
 const Task = require('../models/tasks');
 const ActivityLog = require('../models/activityLog');
 const bcrypt = require('bcryptjs');
 
-// Apply requireAdmin middleware to ALL team management routes
-router.use(requireAuth, requireAdmin);
-
 // GET /team - List team members with task counts
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, requireAdminOrManager, async (req, res) => {
   try {
     const teamMembers = await User.getAllWithTaskCount();
     // Exclude current logged in user if they want, but let's list everyone
@@ -23,13 +20,13 @@ router.get('/', async (req, res) => {
 });
 
 // GET /team/new - Show new team member form
-router.get('/new', (req, res) => {
+router.get('/new', requireAuth, requireAdmin, (req, res) => {
   res.render('team/new');
 });
 
 // POST /team/new - Create team member (generates random password)
-router.post('/new', async (req, res) => {
-  const { name, email, department, phone } = req.body;
+router.post('/new', requireAuth, requireAdmin, async (req, res) => {
+  const { name, email, department, phone, role } = req.body;
 
   if (!name || !email) {
     req.flash('error', 'Please provide name and email.');
@@ -59,7 +56,7 @@ router.post('/new', async (req, res) => {
       name,
       email: email.trim().toLowerCase(),
       passwordHash,
-      role: 'team_member',
+      role: role || 'team_member',
       department,
       phone
     });
@@ -80,7 +77,7 @@ router.post('/new', async (req, res) => {
 });
 
 // GET /team/:id - Team member detail and workload view
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAuth, requireAdminOrManager, async (req, res) => {
   const memberId = parseInt(req.params.id);
 
   try {
@@ -105,7 +102,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /team/:id/reset-password - Reset password (generates random password)
-router.post('/:id/reset-password', async (req, res) => {
+router.post('/:id/reset-password', requireAuth, requireAdmin, async (req, res) => {
   const memberId = parseInt(req.params.id);
 
   try {
@@ -143,8 +140,42 @@ router.post('/:id/reset-password', async (req, res) => {
   }
 });
 
+// POST /team/:id/role - Update team member role (Admin only)
+router.post('/:id/role', requireAuth, requireAdmin, async (req, res) => {
+  const memberId = parseInt(req.params.id);
+  const { role } = req.body;
+
+  if (memberId === req.session.userId) {
+    req.flash('error', 'You cannot change your own system role.');
+    return res.redirect(`/team/${memberId}`);
+  }
+
+  if (!['admin', 'manager', 'team_member'].includes(role)) {
+    req.flash('error', 'Invalid role selected.');
+    return res.redirect(`/team/${memberId}`);
+  }
+
+  try {
+    const member = await User.findById(memberId);
+    if (!member) {
+      req.flash('error', 'Team member not found.');
+      return res.redirect('/team');
+    }
+
+    await User.updateRole(memberId, role);
+    await ActivityLog.log(req.session.userId, `Changed role of ${member.name} to ${role}`, 'user', memberId);
+
+    req.flash('success', `Role for ${member.name} updated to ${role}.`);
+    res.redirect(`/team/${memberId}`);
+  } catch (err) {
+    console.error('Update Role Error:', err);
+    req.flash('error', 'Failed to update system role.');
+    res.redirect(`/team/${memberId}`);
+  }
+});
+
 // POST /team/:id/delete - Delete team member (Admin only)
-router.post('/:id/delete', async (req, res) => {
+router.post('/:id/delete', requireAuth, requireAdmin, async (req, res) => {
   const memberId = parseInt(req.params.id);
 
   if (memberId === req.session.userId) {

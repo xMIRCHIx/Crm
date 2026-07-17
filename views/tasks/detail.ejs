@@ -13,7 +13,7 @@
       </div>
     </div>
     
-    <% if (user.role === 'admin') { %>
+    <% if (user.role === 'admin' || user.role === 'manager') { %>
       <a href="/tasks/<%= task.id %>/edit" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 font-bold py-2.5 px-5 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm">
         <i class="fa-solid fa-pen-to-square"></i>
         <span>Edit Details</span>
@@ -31,7 +31,7 @@
         <div>
           <span class="text-xs text-slate-500 block">Associated Client</span>
           <span class="text-slate-200 font-semibold block mt-1">
-            <% if (user.role === 'admin') { %>
+            <% if (user.role === 'admin' || user.role === 'manager') { %>
               <a href="/clients/<%= task.client_id %>" class="hover:text-[#C29B5C] transition-colors"><%= task.client_name %></a>
             <% } else { %>
               <%= task.client_name %>

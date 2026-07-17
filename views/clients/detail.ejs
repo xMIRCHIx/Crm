@@ -14,11 +14,13 @@
     </div>
 
     <div class="flex space-x-3 items-center">
-      <% if (user.role === 'admin') { %>
+      <% if (user.role === 'admin' || user.role === 'manager') { %>
         <a href="/clients/<%= client.id %>/edit" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-slate-100 font-bold py-2.5 px-5 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm">
           <i class="fa-solid fa-pen-to-square"></i>
           <span>Edit Details</span>
         </a>
+      <% } %>
+      <% if (user.role === 'admin') { %>
         <form action="/clients/<%= client.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete <%= client.name %>? This will permanently delete all related tasks and payments!')">
           <button type="submit" class="bg-red-950/40 hover:bg-red-900/60 text-red-400 hover:text-red-200 border border-red-900/30 hover:border-red-800/50 font-bold py-2.5 px-5 rounded-xl transition duration-150 text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm">
             <i class="fa-solid fa-trash"></i>
@@ -58,7 +60,7 @@
         </div>
         
         <!-- Client Portal Login Access -->
-        <% if (user.role === 'admin') { %>
+        <% if (user.role === 'admin' || user.role === 'manager') { %>
           <div class="border-t border-slate-800 pt-3.5 mt-2 space-y-2">
             <span class="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Client Portal Access</span>
             <% if (portalUser) { %>
@@ -193,8 +195,8 @@
                   </select>
                 </form>
 
-                <!-- Delete Form (Admin only) -->
-                <% if (user.role === 'admin') { %>
+                <!-- Delete Form (Admin/Manager) -->
+                <% if (user.role === 'admin' || user.role === 'manager') { %>
                   <form action="/clients/<%= client.id %>/milestones/<%= milestone.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Delete this milestone?')">
                     <button type="submit" class="text-slate-500 hover:text-red-400 p-1.5 transition-colors">
                       <i class="fa-solid fa-trash-can text-xs"></i>
@@ -208,8 +210,8 @@
       </div>
     <% } %>
 
-    <!-- Add Milestone Form (Admin only) -->
-    <% if (user.role === 'admin') { %>
+    <!-- Add Milestone Form (Admin/Manager) -->
+    <% if (user.role === 'admin' || user.role === 'manager') { %>
       <div class="border-t border-slate-800/80 pt-5">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-450 mb-4">Add Project Milestone</h4>
         <form action="/clients/<%= client.id %>/milestones" method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -237,7 +239,7 @@
         <h3 class="text-lg font-bold text-slate-100 tracking-tight">Assigned Tasks</h3>
         <p class="text-xs text-slate-400 mt-1">Status of tasks linked to this client.</p>
       </div>
-      <% if (user.role === 'admin') { %>
+      <% if (user.role === 'admin' || user.role === 'manager') { %>
         <a href="/tasks/new?client_id=<%= client.id %>" class="text-xs font-bold text-brand-gold hover:text-slate-200 bg-[#C29B5C]/10 border border-[#C29B5C]/20 hover:bg-[#C29B5C]/20 px-3 py-1.5 rounded-xl transition duration-150 flex items-center space-x-1.5">
           <i class="fa-solid fa-plus"></i>
           <span>Create Task</span>
@@ -363,7 +365,7 @@
                       <i class="fa-solid fa-print mr-1"></i>Print
                     </a>
 
-                    <% if (user.role === 'admin' && invoice.status === 'unpaid') { %>
+                    <% if ((user.role === 'admin' || user.role === 'manager') && invoice.status === 'unpaid') { %>
                       <!-- Send Reminder Form -->
                       <form action="/clients/<%= client.id %>/invoices/<%= invoice.id %>/reminder" method="POST" class="inline">
                         <button type="submit" class="text-slate-350 hover:text-slate-100 bg-slate-950 hover:bg-slate-800 px-2 py-1.5 rounded-lg border border-slate-800" title="Send Payment Reminder">
@@ -388,8 +390,8 @@
       </div>
     <% } %>
 
-    <!-- Generate Invoice Form (Admin only) -->
-    <% if (user.role === 'admin') { %>
+    <!-- Generate Invoice Form (Admin/Manager) -->
+    <% if (user.role === 'admin' || user.role === 'manager') { %>
       <div class="p-6 border-t border-slate-800 bg-slate-950/20">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-450 mb-4">Generate New Project Invoice</h4>
         <form action="/clients/<%= client.id %>/invoices" method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -417,7 +419,7 @@
         <h3 class="text-lg font-bold text-slate-100 tracking-tight">Payment Ledger</h3>
         <p class="text-xs text-slate-400 mt-1">Historical ledger of transaction credits.</p>
       </div>
-      <% if (user.role === 'admin') { %>
+      <% if (user.role === 'admin' || user.role === 'manager') { %>
         <a href="/payments/new?client_id=<%= client.id %>" class="text-xs font-bold text-brand-gold hover:text-slate-200 bg-[#C29B5C]/10 border border-[#C29B5C]/20 hover:bg-[#C29B5C]/20 px-3 py-1.5 rounded-xl transition duration-150 flex items-center space-x-1.5">
           <i class="fa-solid fa-plus"></i>
           <span>Record Payment</span>

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin, requireAdminOrManager } = require('../middleware/auth');
 const Client = require('../models/clients');
 const User = require('../models/users');
 const Task = require('../models/tasks');
@@ -35,8 +35,8 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// GET /clients/new - Show new client form (Admin only)
-router.get('/new', requireAuth, requireAdmin, async (req, res) => {
+// GET /clients/new - Show new client form (Admin/Manager)
+router.get('/new', requireAuth, requireAdminOrManager, async (req, res) => {
   try {
     const teamMembers = await User.getAllTeamMembers();
     res.render('clients/new', { teamMembers });
@@ -47,8 +47,8 @@ router.get('/new', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /clients/new - Create new client (Admin only)
-router.post('/new', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/new - Create new client (Admin/Manager)
+router.post('/new', requireAuth, requireAdminOrManager, async (req, res) => {
   const { 
     name, phone, email, address, service_type, status, total_value, notes,
     task_title, task_description, task_assigned_to, task_priority, task_due_date, task_status
@@ -151,8 +151,8 @@ router.get('/:id', requireAuth, async (req, res) => {
   }
 });
 
-// GET /clients/:id/edit - Edit form (Admin only)
-router.get('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
+// GET /clients/:id/edit - Edit form (Admin/Manager)
+router.get('/:id/edit', requireAuth, requireAdminOrManager, async (req, res) => {
   try {
     const client = await Client.findById(req.params.id);
     if (!client) {
@@ -167,8 +167,8 @@ router.get('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /clients/:id/edit - Update client (Admin only)
-router.post('/:id/edit', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/edit - Update client (Admin/Manager)
+router.post('/:id/edit', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const { name, phone, email, address, service_type, status, total_value, notes } = req.body;
 
@@ -217,8 +217,8 @@ router.post('/:id/delete', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /clients/:id/milestones - Add milestone (Admin only)
-router.post('/:id/milestones', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/milestones - Add milestone (Admin/Manager)
+router.post('/:id/milestones', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const { title, description, due_date } = req.body;
 
@@ -264,8 +264,8 @@ router.post('/:id/milestones/:mid/status', requireAuth, async (req, res) => {
   }
 });
 
-// POST /clients/:id/milestones/:mid/delete - Delete milestone (Admin only)
-router.post('/:id/milestones/:mid/delete', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/milestones/:mid/delete - Delete milestone (Admin/Manager)
+router.post('/:id/milestones/:mid/delete', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const milestoneId = parseInt(req.params.mid);
 
@@ -282,8 +282,8 @@ router.post('/:id/milestones/:mid/delete', requireAuth, requireAdmin, async (req
   }
 });
 
-// POST /clients/:id/invoices - Create Invoice (Admin only)
-router.post('/:id/invoices', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/invoices - Create Invoice (Admin/Manager)
+router.post('/:id/invoices', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const { amount, due_date, invoice_number } = req.body;
 
@@ -310,8 +310,8 @@ router.post('/:id/invoices', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /clients/:id/invoices/:invId/status - Update Invoice Status (Admin only)
-router.post('/:id/invoices/:invId/status', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/invoices/:invId/status - Update Invoice Status (Admin/Manager)
+router.post('/:id/invoices/:invId/status', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const invoiceId = parseInt(req.params.invId);
   const { status } = req.body;
@@ -329,8 +329,8 @@ router.post('/:id/invoices/:invId/status', requireAuth, requireAdmin, async (req
   }
 });
 
-// POST /clients/:id/invoices/:invId/reminder - Send Reminder (Admin only)
-router.post('/:id/invoices/:invId/reminder', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/invoices/:invId/reminder - Send Reminder (Admin/Manager)
+router.post('/:id/invoices/:invId/reminder', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
   const invoiceId = parseInt(req.params.invId);
 
@@ -389,8 +389,8 @@ router.get('/:id/invoices/:invId/print', requireAuth, async (req, res) => {
   }
 });
 
-// POST /clients/:id/portal-login - Create portal login credentials for client (Admin only)
-router.post('/:id/portal-login', requireAuth, requireAdmin, async (req, res) => {
+// POST /clients/:id/portal-login - Create portal login credentials for client (Admin/Manager)
+router.post('/:id/portal-login', requireAuth, requireAdminOrManager, async (req, res) => {
   const clientId = parseInt(req.params.id);
 
   try {

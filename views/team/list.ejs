@@ -45,6 +45,8 @@
               <td class="px-6 py-4">
                 <% if (member.role === 'admin') { %>
                   <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-[#C29B5C]/15 text-[#C29B5C] border border-[#C29B5C]/20 uppercase tracking-wide">Admin</span>
+                <% } else if (member.role === 'manager') { %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-wide">Manager</span>
                 <% } else { %>
                   <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-400 border border-slate-700 uppercase tracking-wide">Team Member</span>
                 <% } %>

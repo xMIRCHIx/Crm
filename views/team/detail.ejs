@@ -27,17 +27,23 @@
           <span class="text-slate-300 select-all"><%= member.phone || 'Not configured' %></span>
         </div>
         <div>
-          <span class="text-xs text-slate-500 block">Role Badge</span>
-          <span class="mt-1 block">
-            <% if (member.role === 'admin') { %>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C29B5C]/15 text-[#C29B5C] border border-[#C29B5C]/20 uppercase tracking-wide">Admin</span>
-            <% } else { %>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700 uppercase tracking-wide">Team Member</span>
-            <% } %>
-          </span>
+          <span class="text-xs text-slate-500 block mb-1">System Role</span>
+          <% if (member.id === user.id) { %>
+            <span class="px-2.5 py-1 rounded text-[10px] font-bold bg-[#C29B5C]/15 text-[#C29B5C] border border-[#C29B5C]/20 uppercase tracking-wide">
+              <%= member.role === 'admin' ? 'Admin' : member.role === 'manager' ? 'Manager' : 'Team Member' %>
+            </span>
+          <% } else { %>
+            <form action="/team/<%= member.id %>/role" method="POST" class="inline-block w-full">
+              <select name="role" onchange="this.form.submit()" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C] font-semibold uppercase tracking-wider">
+                <option value="team_member" <%= member.role === 'team_member' ? 'selected' : '' %>>Team Member</option>
+                <option value="manager" <%= member.role === 'manager' ? 'selected' : '' %>>Manager</option>
+                <option value="admin" <%= member.role === 'admin' ? 'selected' : '' %>>Administrator</option>
+              </select>
+            </form>
+          <% } %>
         </div>
         
-        <% if (member.role !== 'admin') { %>
+        <% if (member.id !== user.id) { %>
           <div class="border-t border-slate-800 pt-3.5 mt-2 space-y-2">
             <form action="/team/<%= member.id %>/reset-password" method="POST" onsubmit="return confirm('Are you sure you want to reset password for <%= member.name %>? This will generate a new temporary password.')">
               <button type="submit" class="w-full bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold py-2 px-3 rounded-xl text-xs transition duration-150 border border-slate-800 flex items-center justify-center space-x-1.5">
@@ -45,14 +51,12 @@
                 <span>Reset Account Password</span>
               </button>
             </form>
-            <% if (member.id !== user.id) { %>
-              <form action="/team/<%= member.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete <%= member.name %>? This will delete all tasks assigned to them!')">
-                <button type="submit" class="w-full bg-red-950/20 hover:bg-red-900/40 text-red-400 font-bold py-2 px-3 rounded-xl text-xs transition duration-150 border border-red-950 flex items-center justify-center space-x-1.5">
-                  <i class="fa-solid fa-trash-can"></i>
-                  <span>Delete Team Member</span>
-                </button>
-              </form>
-            <% } %>
+            <form action="/team/<%= member.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete <%= member.name %>? This will delete all tasks assigned to them!')">
+              <button type="submit" class="w-full bg-red-950/20 hover:bg-red-900/40 text-red-400 font-bold py-2 px-3 rounded-xl text-xs transition duration-150 border border-red-950 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Delete Team Member</span>
+              </button>
+            </form>
           </div>
         <% } %>
       </div>

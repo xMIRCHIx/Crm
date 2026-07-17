@@ -5,13 +5,13 @@
   <div class="flex justify-between items-center">
     <div>
       <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">
-        <%= user.role === 'admin' ? 'Task Board' : 'My Tasks' %>
+        <%= (user.role === 'admin' || user.role === 'manager') ? 'Task Board' : 'My Tasks' %>
       </h1>
       <p class="text-sm text-slate-400 mt-1">
-        <%= user.role === 'admin' ? 'Track execution progress across the entire team force.' : 'View and update your active task assignments.' %>
+        <%= (user.role === 'admin' || user.role === 'manager') ? 'Track execution progress across the entire team force.' : 'View and update your active task assignments.' %>
       </p>
     </div>
-    <% if (user.role === 'admin') { %>
+    <% if (user.role === 'admin' || user.role === 'manager') { %>
       <a href="/tasks/new" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 shadow-md text-xs uppercase tracking-wider flex items-center space-x-1.5">
         <i class="fa-solid fa-square-plus"></i>
         <span>Create Task</span>
@@ -22,8 +22,8 @@
   <!-- Search & Filters -->
   <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
     <form action="/tasks" method="GET" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      <% if (user.role === 'admin') { %>
-        <!-- Client Filter (Admin only) -->
+      <% if (user.role === 'admin' || user.role === 'manager') { %>
+        <!-- Client Filter (Admin/Manager only) -->
         <div>
           <select name="client_id" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
             <option value="">All Clients</option>
@@ -33,7 +33,7 @@
           </select>
         </div>
 
-        <!-- Assigned To Filter (Admin only) -->
+        <!-- Assigned To Filter (Admin/Manager only) -->
         <div>
           <select name="assigned_to" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-400 text-xs focus:outline-none focus:border-[#C29B5C]">
             <option value="">All Assignees</option>
@@ -91,7 +91,7 @@
             <tr>
               <th class="px-6 py-4 font-semibold">Task Title</th>
               <th class="px-6 py-4 font-semibold">Linked Client</th>
-              <% if (user.role === 'admin') { %>
+              <% if (user.role === 'admin' || user.role === 'manager') { %>
                 <th class="px-6 py-4 font-semibold">Assigned To</th>
               <% } %>
               <th class="px-6 py-4 font-semibold">Priority</th>
@@ -113,8 +113,8 @@
                   <%= task.client_name %>
                 </td>
 
-                <!-- Assignee (Admin only) -->
-                <% if (user.role === 'admin') { %>
+                <!-- Assignee (Admin/Manager) -->
+                <% if (user.role === 'admin' || user.role === 'manager') { %>
                   <td class="px-6 py-4 text-xs text-slate-300 font-medium">
                     <%= task.assignee_name %>
                   </td>
@@ -155,7 +155,7 @@
                     <a href="/tasks/<%= task.id %>" class="text-slate-400 hover:text-slate-200 transition-colors" title="View details">
                       <i class="fa-solid fa-eye text-base"></i>
                     </a>
-                    <% if (user.role === 'admin') { %>
+                    <% if (user.role === 'admin' || user.role === 'manager') { %>
                       <a href="/tasks/<%= task.id %>/edit" class="text-slate-400 hover:text-brand-gold transition-colors" title="Edit task details">
                         <i class="fa-solid fa-pen-to-square text-base"></i>
                       </a>

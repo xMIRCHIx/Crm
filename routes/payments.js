@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin, requireAdminOrManager } = require('../middleware/auth');
 const Payment = require('../models/payments');
 const Client = require('../models/clients');
 const ActivityLog = require('../models/activityLog');
 
-// Apply Admin restriction to all payments routes
-router.use(requireAuth, requireAdmin);
+// Apply Admin/Manager restriction to all payments routes
+router.use(requireAuth, requireAdminOrManager);
 
 // GET /payments - List all payments recorded
 router.get('/', async (req, res) => {

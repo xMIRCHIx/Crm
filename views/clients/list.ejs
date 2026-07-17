@@ -7,7 +7,7 @@
       <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Clients Registry</h1>
       <p class="text-sm text-slate-400 mt-1">Manage leads, ongoing contracts, and billing balances.</p>
     </div>
-    <% if (user.role === 'admin') { %>
+    <% if (user.role === 'admin' || user.role === 'manager') { %>
       <a href="/clients/new" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 shadow-md text-xs uppercase tracking-wider flex items-center space-x-1.5">
         <i class="fa-solid fa-user-plus"></i>
         <span>Add Client</span>
@@ -122,10 +122,12 @@
                     <a href="/clients/<%= client.id %>" class="text-slate-400 hover:text-slate-200 transition-colors" title="View details">
                       <i class="fa-solid fa-eye text-base"></i>
                     </a>
-                    <% if (user.role === 'admin') { %>
+                    <% if (user.role === 'admin' || user.role === 'manager') { %>
                       <a href="/clients/<%= client.id %>/edit" class="text-slate-400 hover:text-brand-gold transition-colors" title="Edit client">
                         <i class="fa-solid fa-pen-to-square text-base"></i>
                       </a>
+                    <% } %>
+                    <% if (user.role === 'admin') { %>
                       <form action="/clients/<%= client.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete <%= client.name %>? This will permanently delete all related tasks and payments!')">
                         <button type="submit" class="text-slate-400 hover:text-red-400 transition-colors align-middle" title="Delete client">
                           <i class="fa-solid fa-trash text-base"></i>

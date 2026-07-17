@@ -37,6 +37,17 @@ function requireAdmin(req, res, next) {
 }
 
 /**
+ * Middleware to restrict access to Admins or Managers.
+ */
+function requireAdminOrManager(req, res, next) {
+  if (req.session.role !== 'admin' && req.session.role !== 'manager') {
+    req.flash('error', 'Access denied. Administrator or Manager privileges required.');
+    return res.redirect('/dashboard');
+  }
+  next();
+}
+
+/**
  * Middleware to restrict access to Clients only.
  */
 function requireClient(req, res, next) {
@@ -70,6 +81,7 @@ module.exports = {
   dbGuard,
   requireAuth,
   requireAdmin,
+  requireAdminOrManager,
   requireClient,
   exposeSession
 };

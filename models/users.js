@@ -46,6 +46,10 @@ const User = {
     await db.query('UPDATE users SET password_hash = ? WHERE id = ?', [passwordHash, id]);
   },
 
+  async updateRole(id, role) {
+    await db.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
+  },
+
   async delete(id) {
     // 1. Delete tasks assigned to this user
     await db.query('DELETE FROM tasks WHERE assigned_to = ?', [id]);

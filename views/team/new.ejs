@@ -48,6 +48,17 @@
         </select>
       </div>
 
+      <!-- System Role -->
+      <div>
+        <label for="role" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">System Role *</label>
+        <select name="role" id="role" required
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-3 text-slate-300 text-sm focus:outline-none focus:border-[#C29B5C]">
+          <option value="team_member" selected>Team Member</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+
       <!-- Buttons -->
       <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
         <a href="/team" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>
