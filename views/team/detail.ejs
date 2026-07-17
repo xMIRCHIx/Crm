@@ -45,10 +45,15 @@
         
         <% if (member.id !== user.id) { %>
           <div class="border-t border-slate-800 pt-3.5 mt-2 space-y-2">
-            <form action="/team/<%= member.id %>/reset-password" method="POST" onsubmit="return confirm('Are you sure you want to reset password for <%= member.name %>? This will generate a new temporary password.')">
+            <form action="/team/<%= member.id %>/reset-password" method="POST" class="space-y-2">
+              <div>
+                <label for="custom_password" class="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Set Custom Password (Optional)</label>
+                <input type="text" name="custom_password" id="custom_password" placeholder="Leave blank to auto-generate"
+                       class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-slate-200 text-xs focus:outline-none focus:border-[#C29B5C]">
+              </div>
               <button type="submit" class="w-full bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold py-2 px-3 rounded-xl text-xs transition duration-150 border border-slate-800 flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-key"></i>
-                <span>Reset Account Password</span>
+                <span>Reset / Change Password</span>
               </button>
             </form>
             <form action="/team/<%= member.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete <%= member.name %>? This will delete all tasks assigned to them!')">

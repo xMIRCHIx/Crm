@@ -112,11 +112,17 @@ router.post('/:id/reset-password', requireAuth, requireAdmin, async (req, res) =
       return res.redirect('/team');
     }
 
-    // Generate random 10-character password
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+    const { custom_password } = req.body;
     let tempPassword = '';
-    for (let i = 0; i < 10; i++) {
-      tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+    
+    if (custom_password && custom_password.trim()) {
+      tempPassword = custom_password.trim();
+    } else {
+      // Generate random 10-character password
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+      for (let i = 0; i < 10; i++) {
+        tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
     }
 
     // Hash the password

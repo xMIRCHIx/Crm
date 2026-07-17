@@ -125,3 +125,12 @@ CREATE TABLE IF NOT EXISTS ticket_replies (
 ALTER TABLE users ADD COLUMN client_id INT NULL;
 ALTER TABLE users ADD CONSTRAINT fk_users_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL;
 
+-- Client progress updates / notes submitted by client
+CREATE TABLE IF NOT EXISTS client_progress_updates (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  client_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
+);
+

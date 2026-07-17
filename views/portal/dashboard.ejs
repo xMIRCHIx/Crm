@@ -124,7 +124,53 @@
           </a>
         </div>
       </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Client Task Progress & Feedback Updates -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+    <div class="border-b border-slate-800 pb-3">
+      <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Report Task Progress & Updates</h3>
+      <p class="text-xs text-slate-550 mt-1">Submit progress updates, describe what tasks are completed, or list pending items for review.</p>
+    </div>
+
+    <form action="/portal/progress-updates" method="POST" class="space-y-4">
+      <div>
+        <label for="progress_message" class="block text-xs font-semibold uppercase tracking-wider text-slate-450 mb-2">Write Progress / Remaining Tasks details</label>
+        <textarea name="message" id="progress_message" rows="4" required
+                  placeholder="e.g. Milestone 1 is fully completed and verified. Web layout design is pending. Please check and update."
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-slate-200 text-xs placeholder-slate-650 focus:outline-none focus:border-[#C29B5C] resize-none"></textarea>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <p class="text-[10px] text-slate-500">
+          Submitting this will log the task progress update directly for the Administrator's review.
+        </p>
+        <button type="submit" class="bg-gradient-to-r from-yellow-600 to-[#C29B5C] hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-bold py-2.5 px-6 rounded-xl transition duration-150 text-xs uppercase tracking-wider shadow-lg flex items-center space-x-1.5">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Submit Progress Report</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Past Progress Updates History -->
+    <% if (progressUpdates && progressUpdates.length > 0) { %>
+      <div class="border-t border-slate-800 pt-4 mt-6 space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-450">Submitted Reports History</h4>
+        <div class="space-y-3.5 max-h-60 overflow-y-auto pr-2">
+          <% progressUpdates.forEach(update => { %>
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
+              <div class="flex justify-between items-center border-b border-slate-850 pb-2">
+                <span class="text-[9px] font-bold text-[#C29B5C] uppercase tracking-wide">Client Update Note</span>
+                <span class="text-[9px] text-slate-500"><%= new Date(update.created_at).toLocaleString('en-IN') %></span>
+              </div>
+              <p class="text-xs text-slate-350 leading-relaxed whitespace-pre-wrap"><%= update.message %></p>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
   </div>
 </div>
 

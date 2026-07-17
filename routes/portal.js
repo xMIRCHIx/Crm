@@ -6,6 +6,7 @@ const Milestone = require('../models/milestones');
 const Invoice = require('../models/invoices');
 const Ticket = require('../models/tickets');
 const ActivityLog = require('../models/activityLog');
+const ProgressUpdate = require('../models/progressUpdates');
 
 // Apply guards globally to all portal routes
 router.use(requireAuth, requireClient);
@@ -25,13 +26,15 @@ router.get('/', async (req, res) => {
     const progress = await Milestone.getProgress(clientId);
     const invoices = await Invoice.getAllByClientId(clientId);
     const tickets = await Ticket.getAllByClientId(clientId);
+    const progressUpdates = await ProgressUpdate.getAllByClientId(clientId);
 
     res.render('portal/dashboard', {
       client,
       milestones,
       progress,
       invoices,
-      tickets
+      tickets,
+      progressUpdates
     });
   } catch (err) {
     console.error('Client Portal Dashboard Error:', err);
@@ -154,6 +157,32 @@ router.post('/tickets/:id/reply', async (req, res) => {
     console.error('Reply Ticket Error:', err);
     req.flash('error', 'Failed to post reply.');
     res.redirect(`/portal/tickets/${ticketId}`);
+  }
+});
+
+// POST /portal/progress-updates - Submit progress report
+router.post('/progress-updates', async (req, res) => {
+  const clientId = req.session.clientId;
+  const { message } = req.body;
+
+  if (!message || !message.trim()) {
+    req.flash('error', 'Progress update message cannot be empty.');
+    return res.redirect('/portal');
+  }
+
+  try {
+    await ProgressUpdate.create({
+      client_id: clientId,
+      message: message.trim()
+    });
+
+    await ActivityLog.log(req.session.userId, `Submitted a client progress update note`, 'client', clientId);
+    req.flash('success', 'Progress update submitted successfully. The project team has been notified.');
+    res.redirect('/portal');
+  } catch (err) {
+    console.error('Submit Progress Update Error:', err);
+    req.flash('error', 'Failed to submit progress update.');
+    res.redirect('/portal');
   }
 });
 

@@ -8,6 +8,7 @@ const Payment = require('../models/payments');
 const ActivityLog = require('../models/activityLog');
 const Milestone = require('../models/milestones');
 const Invoice = require('../models/invoices');
+const ProgressUpdate = require('../models/progressUpdates');
 const bcrypt = require('bcryptjs');
 
 // GET /clients - List clients (role-scoped)
@@ -135,6 +136,9 @@ router.get('/:id', requireAuth, async (req, res) => {
     // 7. Check if client user portal account exists
     const portalUser = await User.findByClientId(clientId);
 
+    // 8. Fetch client progress updates
+    const progressUpdates = await ProgressUpdate.getAllByClientId(clientId);
+
     res.render('clients/detail', { 
       client, 
       payments, 
@@ -142,7 +146,8 @@ router.get('/:id', requireAuth, async (req, res) => {
       milestones, 
       milestoneProgress, 
       invoices, 
-      portalUser 
+      portalUser,
+      progressUpdates
     });
   } catch (err) {
     console.error('View Client Detail Error:', err);
@@ -462,11 +467,17 @@ router.post('/:id/portal-login/reset-password', requireAuth, requireAdminOrManag
       return res.redirect(`/clients/${clientId}`);
     }
 
-    // Generate random 10-character password
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+    const { custom_password } = req.body;
     let tempPassword = '';
-    for (let i = 0; i < 10; i++) {
-      tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+    
+    if (custom_password && custom_password.trim()) {
+      tempPassword = custom_password.trim();
+    } else {
+      // Generate random 10-character password
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+      for (let i = 0; i < 10; i++) {
+        tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
     }
 
     // Hash the password
