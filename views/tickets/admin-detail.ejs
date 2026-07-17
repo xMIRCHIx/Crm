@@ -26,6 +26,15 @@
         <%= ticket.status.replace('_', ' ') %>
       </span>
 
+      <!-- Set Priority Form -->
+      <form action="/tickets/<%= ticket.id %>/priority" method="POST" class="inline">
+        <select name="priority" onchange="this.form.submit()" class="bg-slate-900 border border-slate-800 rounded-lg text-slate-350 text-[10px] font-bold uppercase tracking-wider py-1.5 px-2.5 focus:outline-none focus:border-[#C29B5C]">
+          <option value="low" <%= ticket.priority === 'low' ? 'selected' : '' %>>Low Priority</option>
+          <option value="medium" <%= ticket.priority === 'medium' ? 'selected' : '' %>>Medium Priority</option>
+          <option value="high" <%= ticket.priority === 'high' ? 'selected' : '' %>>High Priority</option>
+        </select>
+      </form>
+
       <!-- Quick Action: Resolve / Re-open -->
       <form action="/tickets/<%= ticket.id %>/status" method="POST" class="inline">
         <% if (ticket.status !== 'resolved') { %>

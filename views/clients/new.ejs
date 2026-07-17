@@ -85,6 +85,60 @@
         </div>
       </div>
 
+      <!-- Initial Task Assignment (Optional) -->
+      <div class="border-t border-slate-800/80 pt-6 mt-4 space-y-4">
+        <div>
+          <h3 class="text-sm font-bold text-slate-200">Initial Client Task (Optional)</h3>
+          <p class="text-[11px] text-slate-500">Configure and assign the first task for this client immediately.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-950/40 p-5 rounded-2xl border border-slate-800/60">
+          <!-- Task Title -->
+          <div class="md:col-span-2">
+            <label for="task_title" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Task Title</label>
+            <input type="text" name="task_title" id="task_title" placeholder="e.g. Set up initial project storyboard"
+                   class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-slate-200 text-xs focus:outline-none focus:border-[#C29B5C]">
+          </div>
+
+          <!-- Assignee -->
+          <div>
+            <label for="task_assigned_to" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Assign Team Member</label>
+            <select name="task_assigned_to" id="task_assigned_to"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C]">
+              <option value="" selected>Select team member...</option>
+              <% teamMembers.forEach(member => { %>
+                <option value="<%= member.id %>"><%= member.name %> (<%= member.department || 'General' %>)</option>
+              <% }) %>
+            </select>
+          </div>
+
+          <!-- Priority -->
+          <div>
+            <label for="task_priority" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Task Priority</label>
+            <select name="task_priority" id="task_priority"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C]">
+              <option value="low">Low Priority</option>
+              <option value="medium" selected>Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+          </div>
+
+          <!-- Due Date -->
+          <div class="md:col-span-2">
+            <label for="task_due_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Due Date / Deadline</label>
+            <input type="date" name="task_due_date" id="task_due_date"
+                   class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C]">
+          </div>
+
+          <!-- Task Description -->
+          <div class="md:col-span-2">
+            <label for="task_description" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Task Description</label>
+            <textarea name="task_description" id="task_description" rows="3" placeholder="Describe the task scope and deliverables..."
+                      class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-slate-200 text-xs focus:outline-none focus:border-[#C29B5C] resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
       <!-- Action Buttons -->
       <div class="flex items-center justify-end space-x-4 pt-6 border-t border-slate-800">
         <a href="/clients" class="text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</a>

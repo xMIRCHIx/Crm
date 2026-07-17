@@ -49,7 +49,10 @@ router.get('/new', requireAuth, requireAdmin, async (req, res) => {
 
 // POST /clients/new - Create new client (Admin only)
 router.post('/new', requireAuth, requireAdmin, async (req, res) => {
-  const { name, phone, email, address, service_type, status, total_value, notes } = req.body;
+  const { 
+    name, phone, email, address, service_type, status, total_value, notes,
+    task_title, task_description, task_assigned_to, task_priority, task_due_date
+  } = req.body;
 
   try {
     const clientId = await Client.create({
@@ -65,6 +68,22 @@ router.post('/new', requireAuth, requireAdmin, async (req, res) => {
     });
 
     await ActivityLog.log(req.session.userId, `Created client: ${name}`, 'client', clientId);
+
+    // Optional: Create initial task if task_title is provided
+    if (task_title && task_title.trim()) {
+      const taskId = await Task.create({
+        title: task_title.trim(),
+        description: task_description || '',
+        client_id: clientId,
+        assigned_to: task_assigned_to ? parseInt(task_assigned_to) : null,
+        status: 'not_started',
+        priority: task_priority || 'medium',
+        due_date: task_due_date || null,
+        created_by: req.session.userId
+      });
+      await ActivityLog.log(req.session.userId, `Created and assigned initial task: ${task_title}`, 'task', taskId);
+    }
+
     req.flash('success', 'Client created successfully.');
     res.redirect(`/clients/${clientId}`);
   } catch (err) {

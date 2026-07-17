@@ -41,6 +41,10 @@ const Ticket = {
     await db.query('UPDATE tickets SET status = ? WHERE id = ?', [status, id]);
   },
 
+  async updatePriority(id, priority) {
+    await db.query('UPDATE tickets SET priority = ? WHERE id = ?', [priority, id]);
+  },
+
   async addReply(ticketId, userId, message) {
     await db.query(
       'INSERT INTO ticket_replies (ticket_id, user_id, message) VALUES (?, ?, ?)',

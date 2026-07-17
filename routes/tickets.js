@@ -98,4 +98,28 @@ router.post('/:id/status', async (req, res) => {
   }
 });
 
+// POST /tickets/:id/priority - Update ticket priority (Admin only)
+router.post('/:id/priority', async (req, res) => {
+  const ticketId = parseInt(req.params.id);
+  const { priority } = req.body;
+
+  try {
+    const ticket = await Ticket.findById(ticketId);
+    if (!ticket) {
+      req.flash('error', 'Ticket not found.');
+      return res.redirect('/tickets');
+    }
+
+    await Ticket.updatePriority(ticketId, priority);
+    await ActivityLog.log(req.session.userId, `Updated support ticket priority to ${priority}`, 'user', req.session.userId);
+
+    req.flash('success', `Ticket priority updated to ${priority}.`);
+    res.redirect(`/tickets/${ticketId}`);
+  } catch (err) {
+    console.error('Update Ticket Priority Error:', err);
+    req.flash('error', 'Failed to update priority.');
+    res.redirect(`/tickets/${ticketId}`);
+  }
+});
+
 module.exports = router;
