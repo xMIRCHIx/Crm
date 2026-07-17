@@ -44,6 +44,13 @@ const User = {
 
   async updatePassword(id, passwordHash) {
     await db.query('UPDATE users SET password_hash = ? WHERE id = ?', [passwordHash, id]);
+  },
+
+  async delete(id) {
+    // 1. Delete tasks assigned to this user
+    await db.query('DELETE FROM tasks WHERE assigned_to = ?', [id]);
+    // 2. Delete user
+    await db.query('DELETE FROM users WHERE id = ?', [id]);
   }
 };
 

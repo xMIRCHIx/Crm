@@ -143,4 +143,32 @@ router.post('/:id/reset-password', async (req, res) => {
   }
 });
 
+// POST /team/:id/delete - Delete team member (Admin only)
+router.post('/:id/delete', async (req, res) => {
+  const memberId = parseInt(req.params.id);
+
+  if (memberId === req.session.userId) {
+    req.flash('error', 'You cannot delete your own administrative account.');
+    return res.redirect('/team');
+  }
+
+  try {
+    const member = await User.findById(memberId);
+    if (!member) {
+      req.flash('error', 'Team member not found.');
+      return res.redirect('/team');
+    }
+
+    await User.delete(memberId);
+    await ActivityLog.log(req.session.userId, `Deleted team member: ${member.name}`, 'user', memberId);
+
+    req.flash('success', 'Team member deleted successfully.');
+    res.redirect('/team');
+  } catch (err) {
+    console.error('Delete Team Member Error:', err);
+    req.flash('error', 'Failed to delete team member.');
+    res.redirect('/team');
+  }
+});
+
 module.exports = router;
