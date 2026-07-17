@@ -19,6 +19,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Request Logging (Helper to trace path routing issues in production)
+app.use((req, res, next) => {
+  console.log(`[ROUTE-TRACE] Method: ${req.method} | OriginalURL: ${req.originalUrl} | Path: ${req.path}`);
+  next();
+});
+
 // Serve Static Assets
 app.use(express.static(path.join(__dirname, 'public')));
 
