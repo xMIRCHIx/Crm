@@ -445,4 +445,48 @@ router.post('/:id/portal-login', requireAuth, requireAdminOrManager, async (req,
   }
 });
 
+// POST /clients/:id/portal-login/reset-password - Reset client portal password (Admin/Manager)
+router.post('/:id/portal-login/reset-password', requireAuth, requireAdminOrManager, async (req, res) => {
+  const clientId = parseInt(req.params.id);
+
+  try {
+    const client = await Client.findById(clientId);
+    if (!client) {
+      req.flash('error', 'Client not found.');
+      return res.redirect('/clients');
+    }
+
+    const portalUser = await User.findByClientId(clientId);
+    if (!portalUser) {
+      req.flash('error', 'Portal login account does not exist.');
+      return res.redirect(`/clients/${clientId}`);
+    }
+
+    // Generate random 10-character password
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+    let tempPassword = '';
+    for (let i = 0; i < 10; i++) {
+      tempPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    // Hash the password
+    const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+    // Update password in DB
+    await User.updatePassword(portalUser.id, passwordHash);
+
+    await ActivityLog.log(req.session.userId, `Reset client portal password for: ${client.name}`, 'client', clientId);
+
+    res.render('team/new-success', {
+      name: `${client.name} (Client Portal)`,
+      email: portalUser.email,
+      tempPassword
+    });
+  } catch (err) {
+    console.error('Reset Client Portal Password Error:', err);
+    req.flash('error', 'Failed to reset client portal password.');
+    res.redirect(`/clients/${clientId}`);
+  }
+});
+
 module.exports = router;
