@@ -51,7 +51,7 @@ router.get('/new', requireAuth, requireAdmin, async (req, res) => {
 router.post('/new', requireAuth, requireAdmin, async (req, res) => {
   const { 
     name, phone, email, address, service_type, status, total_value, notes,
-    task_title, task_description, task_assigned_to, task_priority, task_due_date
+    task_title, task_description, task_assigned_to, task_priority, task_due_date, task_status
   } = req.body;
 
   try {
@@ -76,7 +76,7 @@ router.post('/new', requireAuth, requireAdmin, async (req, res) => {
         description: task_description || '',
         client_id: clientId,
         assigned_to: task_assigned_to ? parseInt(task_assigned_to) : null,
-        status: 'not_started',
+        status: task_status || 'not_started',
         priority: task_priority || 'medium',
         due_date: task_due_date || null,
         created_by: req.session.userId

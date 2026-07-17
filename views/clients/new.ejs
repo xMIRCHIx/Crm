@@ -123,8 +123,20 @@
             </select>
           </div>
 
+          <!-- Status -->
+          <div>
+            <label for="task_status" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Initial Status</label>
+            <select name="task_status" id="task_status"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C]">
+              <option value="not_started" selected>Not Started</option>
+              <option value="in_progress">In Progress / Working</option>
+              <option value="under_review">Under Review</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
           <!-- Due Date -->
-          <div class="md:col-span-2">
+          <div>
             <label for="task_due_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Due Date / Deadline</label>
             <input type="date" name="task_due_date" id="task_due_date"
                    class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-slate-350 text-xs focus:outline-none focus:border-[#C29B5C]">
